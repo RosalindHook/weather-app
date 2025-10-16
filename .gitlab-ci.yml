@@ -1,4 +1,4 @@
-image: node:18
+image: node:20 
 
 stages:
   - build
@@ -7,15 +7,12 @@ stages:
 
 build:
   stage: build
-
   cache:
     paths:
       - node_modules/
-
   script:
     - npm ci
     - npm run build
-
   artifacts:
     paths:
       - dist
@@ -28,23 +25,19 @@ test:
       - node_modules/
     policy: pull
   script:
-    - npm run test:run
+    - npm run test
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
-
 
 pages:
   stage: deploy
   dependencies:
     - build
-
   script:
     - rm -rf public
     - cp dist/index.html dist/404.html
     - mv dist public
-
   artifacts:
     paths:
       - public
-
   only:
-    - develop  # use develop branch for now
+    - develop
