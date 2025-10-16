@@ -1,0 +1,50 @@
+image: node:18
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+
+  cache:
+    paths:
+      - node_modules/
+
+  script:
+    - npm ci
+    - npm run build
+
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 hour
+
+test:
+  stage: test
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
+  script:
+    - npm run test:run
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+
+
+pages:
+  stage: deploy
+  dependencies:
+    - build
+
+  script:
+    - rm -rf public
+    - cp dist/index.html dist/404.html
+    - mv dist public
+
+  artifacts:
+    paths:
+      - public
+
+  only:
+    - develop  # use develop branch for now
