@@ -20,7 +20,7 @@ const WeatherCard = ({ weatherData = false }) => {
         }}>
             <h3>{weatherData.name}, {getUnicodeFlagIcon(weatherData.sys.country)} </h3>
             <p>Temperature: {Math.round(weatherData.main.temp)} C</p>
-            <p>Feels like: {weatherData.main.feels_like} C</p>
+            <p>Feels like: {Math.round(weatherData.main.feels_like)} C</p>
             <p>Description: {weatherData.weather[0].description}</p>
             <p>Humidity: {weatherData.main.humidity}%</p>
         </div>

@@ -33,4 +33,23 @@ describe('WeatherScene', () => {
             expect(screen.getByText('API failure')).toBeInTheDocument();
         });
     });
+
+    it('shows not found error message for invalid city input that fails API', async () => {
+        // Mock getCurrentWeather to throw the user-friendly 404 error
+        getCurrentWeather.mockRejectedValueOnce(
+            new Error('"123df" not found. Check spelling and try again.')
+        );
+
+        render(<WeatherScene />);
+
+        fireEvent.change(screen.getByPlaceholderText('Enter City'), {
+            target: { value: '123df' }
+        });
+        fireEvent.click(screen.getByRole('button', { name: 'Search' }));
+
+        // Check if the custom error message appears on screen
+        const expectedErrorMsg = `"123df" not found. Check spelling and try again.`;
+        expect(await screen.findByText(expectedErrorMsg)).toBeInTheDocument();
+    });
 });
+
