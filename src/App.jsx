@@ -3,7 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import React from 'react'
-import WeatherTest from './components/WeatherTest'    // test component to check API
+import WeatherTest from './scenes/WeatherScene'    // test component to check API
 
 function App() {
 

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import WeatherTest from '../WeatherTest';
+import WeatherTest from '../../scenes/WeatherScene';
 import { weatherService } from '../../services/weatherAPI';
 
 // Mock entire weatherService module
