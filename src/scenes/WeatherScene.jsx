@@ -41,7 +41,7 @@ const WeatherScene = () => {
         <div>
             <h2>Weather Search</h2>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} data-testid="weather-form">
                 <input
                     type="text"
                     value={city}
