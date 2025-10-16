@@ -21,7 +21,7 @@ export const weatherService = {
             });
 
             // Log the full API response data
-            console.log('Weather API response:', response.data);
+            // console.log('Weather API response:', response.data);
 
             return response.data;
         } catch (error) {
