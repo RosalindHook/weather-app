@@ -34,7 +34,7 @@ const WeatherCard = ({ weatherData = null, forecastData = null, cityName = '' })
                 {!flipped ? (
                     <CardContent sx={{ textAlign: 'center' }}>
                         <Typography variant="h6" gutterBottom>
-                            {cityName || weatherData.name}, {getUnicodeFlagIcon(weatherData.sys.country)}
+                            {weatherData.name}, {getUnicodeFlagIcon(weatherData.sys.country)}
                         </Typography>
                         <Typography variant="body1" sx={{ color: getWeatherColour(weatherData.main.temp) }}>
                             Temperature: {Math.round(weatherData.main.temp)}°C

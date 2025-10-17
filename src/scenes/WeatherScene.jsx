@@ -36,10 +36,10 @@ const WeatherScene = () => {
     const handleInputChange = (e) => {
         const value = e.target.value;
         setCity(value); // Update input value state
-    
+
         const hasTyped = value.trim() !== '';         // Has the user typed anything (ignores whitespace)?
         const willBeTouched = touched || hasTyped;    // Predict if the field is (or will be) considered 'touched'
-    
+
         // If the field isn't touched yet but the user has typed something, mark it as touched
         if (hasTyped && !touched) {
             setTouched(true);
@@ -47,7 +47,7 @@ const WeatherScene = () => {
 
         // Run validation in partial mode (i.e. only format checks, not length)
         const warning = validateInput(value, { fullCheck: false });
-    
+
         // Show validation warning only if:
         // - the user has interacted with the field (touched or will be)
         // - AND the input isn’t blank (to avoid warnings while retrying)
@@ -58,7 +58,7 @@ const WeatherScene = () => {
         }
         // Clear any existing API error (from a previous failed submission)
         if (error) setError(null);
-    };    
+    };
 
     // update submit handler with combined API call - current weather and forecast
     const handleSubmit = async (e) => {
@@ -120,10 +120,11 @@ const WeatherScene = () => {
                 <p style={{ color: 'red' }}>{error}</p>
             )}
 
-            <WeatherCard 
-            weatherData={weatherData}
-            forecastData={forecastData}
-            cityName={currentCity} 
+            <WeatherCard
+                key={currentCity}
+                weatherData={weatherData}
+                forecastData={forecastData}
+                cityName={currentCity}
             />
         </div>
     );
