@@ -33,28 +33,30 @@ const WeatherScene = () => {
 
     const handleInputChange = (e) => {
         const value = e.target.value;
-        setCity(value);
-
-        // Set touched only if user typed something
-        if (!touched && value.trim() !== '') {
+        setCity(value); // Update input value state
+    
+        const hasTyped = value.trim() !== '';         // Has the user typed anything (ignores whitespace)?
+        const willBeTouched = touched || hasTyped;    // Predict if the field is (or will be) considered 'touched'
+    
+        // If the field isn't touched yet but the user has typed something, mark it as touched
+        if (hasTyped && !touched) {
             setTouched(true);
         }
 
-        // do partial validation here (format only, not length)
+        // Run validation in partial mode (i.e. only format checks, not length)
         const warning = validateInput(value, { fullCheck: false });
-
-        // Show warning only if:
-        // - user has typed something (`touched`)
-        // - AND the input isn't blank (i.e., in case they're trying to retry)
-        if (touched && value.trim() !== '') {
-            setValidationWarning(warning);
+    
+        // Show validation warning only if:
+        // - the user has interacted with the field (touched or will be)
+        // - AND the input isn’t blank (to avoid warnings while retrying)
+        if (willBeTouched && hasTyped) {
+            setValidationWarning(warning);  // Set warning if input is invalid
         } else {
-            setValidationWarning(null);
+            setValidationWarning(null);     // Clear warning otherwise
         }
-
+        // Clear any existing API error (from a previous failed submission)
         if (error) setError(null);
-    };
-
+    };    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
