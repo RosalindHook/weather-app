@@ -1,133 +1,124 @@
-import React, { useState } from 'react';
-import { getWeatherAndForecast } from '../services/weatherAPI';
+import React from 'react';
+import { Grid, Container, Typography, Box } from '@mui/material';
+import { useFormValidation } from '../hooks/useFormValidation';
+import { useMultipleCities } from '../hooks/useMultipleCities';
 import WeatherCard from '../components/WeatherCard';
-
 const WeatherScene = () => {
-    const [city, setCity] = useState('');
-    const [weatherData, setWeatherData] = useState(null);
-    const [forecastData, setForecastData] = useState(null); // add forecast state
-    const [currentCity, setCurrentCity] = useState('');     // track which city is displayed
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [validationWarning, setValidationWarning] = useState(null);
-    const [touched, setTouched] = useState(false);
+    const {
+        city,
+        validationWarning,
+        handleInputChange,
+        validateForSubmit,
+        resetForm
+    } = useFormValidation();
 
-    // Client-side input validation
-    const validateInput = (input, { fullCheck = false } = {}) => {
-        const trimmed = input.trim();
-
-        if (!trimmed) {     // guard clause - checks if input empty after trimming white space
-            return 'Please enter a city name';
-        }
-
-        // Only enforce 3+ chars during submit
-        if (fullCheck && trimmed.length < 3) {
-            return 'City name must be at least 3 characters long';
-        }
-
-        // Regex to allow only letters and spaces (including accented letters)
-        if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(trimmed)) {
-            return 'City name must contain only letters and spaces';
-        }
-
-        return null;
-    };
-
-    const handleInputChange = (e) => {
-        const value = e.target.value;
-        setCity(value); // Update input value state
-
-        const hasTyped = value.trim() !== '';         // Has the user typed anything (ignores whitespace)?
-        const willBeTouched = touched || hasTyped;    // Predict if the field is (or will be) considered 'touched'
-
-        // If the field isn't touched yet but the user has typed something, mark it as touched
-        if (hasTyped && !touched) {
-            setTouched(true);
-        }
-
-        // Run validation in partial mode (i.e. only format checks, not length)
-        const warning = validateInput(value, { fullCheck: false });
-
-        // Show validation warning only if:
-        // - the user has interacted with the field (touched or will be)
-        // - AND the input isn’t blank (to avoid warnings while retrying)
-        if (willBeTouched && hasTyped) {
-            setValidationWarning(warning);  // Set warning if input is invalid
-        } else {
-            setValidationWarning(null);     // Clear warning otherwise
-        }
-        // Clear any existing API error (from a previous failed submission)
-        if (error) setError(null);
-    };
-
-    // update submit handler with combined API call - current weather and forecast
+    const {
+        cities,
+        loading,
+        error,
+        maxLimitReached, // Get the new state
+        addCity,
+        removeCity,
+        clearError
+    } = useMultipleCities();
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const warning = validateInput(city, { fullCheck: true });;
-        setValidationWarning(warning);
-
-        if (warning) {
-            return; // Don't proceed with API call
-        }
-        setLoading(true);
-        setError(null);
-        setWeatherData(null);
-        setForecastData(null);  // clear previous forecast
-
+        if (!validateForSubmit()) return;
         try {
-            // use combined API call
-            const data = await getWeatherAndForecast(city.trim());
-            setWeatherData(data.current);
-            setForecastData(data.forecast);
-            setCurrentCity(city.trim()); // store city name for the card
-            setCity('');
-            setTouched(false); // Reset after success
-        } catch (err) {
-            setError(err.message || 'Something went wrong');
-            setCurrentCity(''); // clear city on error
-        } finally {
-            setLoading(false);
+            await addCity(city.trim());
+            resetForm();
+        } catch {
+            // Error is already handled in the hook
         }
     };
-
     return (
-        <div>
-            <h2>Weather Search</h2>
+        <Container maxWidth="lg">
+            <Box sx={{ py: 4 }}>
+                <Typography variant="h4" component="h1" gutterBottom align="center">
+                    Weather Dashboard
+                </Typography>
+                <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}>
+                    <form onSubmit={handleSubmit} data-testid="weather-form">
+                        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                            <Box>
+                                <input
+                                    type="text"
+                                    value={city}
+                                    onChange={(e) => handleInputChange(e, clearError)}
+                                    placeholder="Enter City"
+                                    disabled={loading}
+                                    style={{
+                                        padding: '12px',
+                                        borderRadius: '4px',
+                                        border: '1px solid #ccc',
+                                        fontSize: '16px',
+                                        width: '200px'
+                                    }}
+                                />
+                                {validationWarning && (
+                                    <Typography variant="caption" color="warning.main" display="block">
+                                        {validationWarning}
+                                    </Typography>
+                                )}
+                            </Box>
+                            <button
+                                type="submit"
+                                disabled={loading || !city.trim() || cities.length >= 3}
+                                style={{
+                                    padding: '12px 24px',
+                                    borderRadius: '4px',
+                                    border: 'none',
+                                    backgroundColor: loading || cities.length >= 3 ? '#ccc' : '#1976d2',
+                                    color: 'white',
+                                    fontSize: '16px',
+                                    cursor: loading || cities.length >= 3 ? 'not-allowed' : 'pointer'
+                                }}
+                            >
+                                {loading ? 'Loading...' : 'Add City'}
+                            </button>
+                        </Box>
+                    </form>
+                </Box>
+                {/* Error message */}
+                {error && (
+                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                        <Typography color="error">{error}</Typography>
+                    </Box>
+                )}
+                {/* Conditional helper messages */}
+                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center', minHeight: '24px' }}>
+                    {maxLimitReached ? (
+                        <Typography variant="body2" color="warning.main">
+                            Maximum 3 cities reached. Remove a city to add another.
+                        </Typography>
+                    ) : cities.length > 0 && cities.length < 3 ? (
+                        <Typography variant="body2" color="text.secondary">
+                            Would you like to add another city? (up to 3 total)
+                        </Typography>
+                    ) : null}
+                </Box>
+                <Grid container spacing={3} justifyContent="center">
 
-            <form onSubmit={handleSubmit} data-testid="weather-form">
-                <input
-                    type="text"
-                    value={city}
-                    onChange={handleInputChange}
-                    placeholder="Enter City"
-                    disabled={loading}
-                />
-
-                <button
-                    type="submit"
-                    disabled={loading || !city.trim()}
-                >
-                    {loading ? 'Loading...' : 'Search'}
-                </button>
-            </form>
-
-            {validationWarning && (
-                <p style={{ color: 'orange' }}>{validationWarning}</p>
-            )}
-
-            {error && (
-                <p style={{ color: 'red' }}>{error}</p>
-            )}
-
-            <WeatherCard
-                key={currentCity}
-                weatherData={weatherData}
-                forecastData={forecastData}
-                cityName={currentCity}
-            />
-        </div>
+                    {cities.map(cityData => (
+                        <WeatherCard
+                            key={cityData.id}
+                            weatherData={cityData.current}
+                            forecastData={cityData.forecast}
+                            cityName={cityData.name}
+                            onRemove={() => removeCity(cityData.id)}
+                        />
+                    ))}
+                </Grid>
+                {cities.length === 0 && (
+                    <Box sx={{ textAlign: 'center', mt: 4 }}>
+                        <Typography variant="h6" color="text.secondary">
+                            Search for a city to get started! 🌤️
+                        </Typography>
+                    </Box>
+                )}
+            </Box>
+        </Container>
     );
 };
-
 export default WeatherScene;
