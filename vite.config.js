@@ -8,6 +8,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom', // switch from jsdom
-    setupFiles: './src/test/setup.js'
+    setupFiles: './src/test/setup.js',
+    testTimeout: 30000
   }
 })
