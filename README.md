@@ -21,7 +21,7 @@ npm run dev
 ```
 
 ## Tech stack
-* React 18 - UI framework
+* React 18 - UI framework with custom hooks for state management
 * Material-UI (MUI) - component library and styling
 * Vite - Build tool and dev server
 * Axios - HTTP client for API calls
@@ -30,7 +30,8 @@ npm run dev
 * React Testing Library - Component testing utilities
 
 ## Testing
-Test coverage includes unit tests for API integration, component behaviour, input validation, and integration tests for full user interaction flows. To run the tests:
+Test coverage includes unit tests for API integration, component behaviour, input validation, and integration tests for full user interaction flows. Custom hook tests for state management logic testing to follow.
+To run the tests:
 
 ```bash
 npm test
@@ -39,32 +40,38 @@ npm test
 The app uses the [OpenWeatherMap API](https://openweathermap.org/api) for weather data.
 
 ### Current implementation
-- **Current weather data** for any city via search box
-- **Five day forecast display** with flip card interaction showing daily temp summaries
-- **City search** with input validation and user-friendly warnings
-- **Interactive UI** - click weather cards to flip between current weather and forecast
-- **Error handling** for API failures and invalid city names
-- **Combined API calls** for efficient data fetching (current weather and five day forecast)
-- **Mocked testing** for reliable test suite
-
+- **Multiple weather cards** - Add up to three cities side by side with independent functionality
+- **Interactive flip cards** - Click weather cards to flip between current weather and 5-day forecast
+- **Current weather data** for any city via search box with smart input validation
+- **Five day forecast display** with daily temperature summaries and weather conditions
+- **Enhanced state management** - Custom hooks for clean architecture and reusable logic
+- **Some initial UX features** - Duplicate city prevention, helpful user guidance, and intuitive error handling
+- **Error handling** for API failures, invalid city names, and user input validation
+- **Combined API calls** for efficient data fetching (current weather and 5-day forecast)
+- **Comprehensive testing** - Unit and integration tests. Custom hook tests to follow
+- 
 ## Project structure
 Current structure:
 ```
 src/
-├── components/             # Reusable UI components
-│   ├── WeatherCard.jsx     # Weather data display component
-│   └── __tests__/          # Component tests
-├── scenes/                 # Page-level components
-│   ├── WeatherScene.jsx    # Main weather search interface
-│   └── __tests__/          # Scene tests including integration test
-├── services/               # API and business logic
-│   ├── weatherAPI.js       # OpenWeatherMap integration
-│   └── __tests__/          # Service tests
-├── utils/                  # Helper functions and utilities
-│   ├── weatherHelpers.js   # OpenWeatherMap integration
-│   └── __tests__/          # to follow (need to do more with data visualisation)
+├── components/                  # Reusable UI components
+│   ├── WeatherCard.jsx          # Weather data display component
+│   └── __tests__/               # Component tests
+├── hooks/                       # Custom React hooks for state maangement
+│   ├── useFormValidation.js     # Form input validation and state
+│   └── useMultipleCities.js     # State management of multiple cities
+│   └── useWeatherData.js        # Currently unused hook - kept for potential future single city components
+├── scenes/                      # Page-level components
+│   ├── WeatherScene.jsx         # Main weather search interface
+│   └── __tests__/               # Scene tests including integration test
+├── services/                    # API and business logic
+│   ├── weatherAPI.js            # OpenWeatherMap integration
+│   └── __tests__/               # Service tests
+├── utils/                       # Helper functions and utilities
+│   ├── weatherHelpers.js        # Weather data processing and display helpers
+│   └── __tests__/               # to follow (need to do more with data visualisation)
 └── test/
-    └── setup.js         # Test environment configuration
+    └── setup.js                 # Test environment configuration
 
 ```
 ## Development workflow
@@ -96,8 +103,8 @@ The `.gitlab-ci.yml` file defines a three-stage pipeline:
 ### Phase 2: User features (+ related tests)
 - [x] City search functionality
 - [x] 5 day forecast display
-- [ ] Add multiple cards to show cities side by side
-- [ ] State management implementation + tests
+- [x] Add multiple cards to show cities side by side
+- [x] State management implementation + tests
 - [x] Integration testing (real API calls)
 
 ### Phase 3: UI/UX (+ related tests)
