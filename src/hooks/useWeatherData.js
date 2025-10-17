@@ -1,3 +1,6 @@
+// this hook is currently unused - replaced by useMultipleCities for multiple city functionality.
+// Kept for potential future single city components
+
 import { useState } from 'react';
 import { getWeatherAndForecast } from '../services/weatherAPI';
 
