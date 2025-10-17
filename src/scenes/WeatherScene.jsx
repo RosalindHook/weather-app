@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { getCurrentWeather } from '../services/weatherAPI';
+import { getWeatherAndForecast } from '../services/weatherAPI';
 import WeatherCard from '../components/WeatherCard';
 
 const WeatherScene = () => {
     const [city, setCity] = useState('');
     const [weatherData, setWeatherData] = useState(null);
+    const [forecastData, setForecastData] = useState(null); // add forecast state
+    const [currentCity, setCurrentCity] = useState('');     // track which city is displayed
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [validationWarning, setValidationWarning] = useState(null);
@@ -58,6 +60,7 @@ const WeatherScene = () => {
         if (error) setError(null);
     };    
 
+    // update submit handler with combined API call - current weather and forecast
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -70,14 +73,19 @@ const WeatherScene = () => {
         setLoading(true);
         setError(null);
         setWeatherData(null);
+        setForecastData(null);  // clear previous forecast
 
         try {
-            const data = await getCurrentWeather(city.trim());
-            setWeatherData(data);
+            // use combined API call
+            const data = await getWeatherAndForecast(city.trim());
+            setWeatherData(data.current);
+            setForecastData(data.forecast);
+            setCurrentCity(city.trim()); // store city name for the card
             setCity('');
             setTouched(false); // Reset after success
         } catch (err) {
             setError(err.message || 'Something went wrong');
+            setCurrentCity(''); // clear city on error
         } finally {
             setLoading(false);
         }
@@ -112,7 +120,11 @@ const WeatherScene = () => {
                 <p style={{ color: 'red' }}>{error}</p>
             )}
 
-            <WeatherCard weatherData={weatherData} />
+            <WeatherCard 
+            weatherData={weatherData}
+            forecastData={forecastData}
+            cityName={currentCity} 
+            />
         </div>
     );
 };

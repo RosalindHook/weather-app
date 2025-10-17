@@ -1,23 +1,11 @@
-import React from 'react';
-import { Card, CardContent, Grid, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Card, CardContent, Grid, Typography, Box } from '@mui/material';
+import { getUnicodeFlagIcon, getWeatherColour, getDailySummaries } from '../utils/weatherHelpers';
 
-// Guard clause to prevent rendering without weather data
-const WeatherCard = ({ weatherData = false }) => {
+const WeatherCard = ({ weatherData = null, forecastData = null, cityName = '' }) => {
+    const [flipped, setFlipped] = useState(false); // always called
     if (!weatherData) return null;
-
-    const getUnicodeFlagIcon = (countryCode) => {
-        return countryCode
-            .toUpperCase()
-            .replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt()));
-    };
-
-    // change colour based on temperature
-    const getWeatherColour = (temp) => {
-        if (temp < 0) return '#74b9ff';
-        if (temp < 15) return '#00b894';
-        if (temp < 25) return '#e84393';
-        return '#e17055';
-    };
+    const daily = getDailySummaries(forecastData);
 
     return (
         <Grid item xs={12} sm={6} md={4}>
@@ -37,25 +25,53 @@ const WeatherCard = ({ weatherData = false }) => {
                     '&:hover': {
                         transform: 'translateY(-5px)',
                     },
+                    cursor: 'pointer',
+                    position: 'relative',
+                    overflow: 'hidden',
                 }}
+                onClick={() => setFlipped((f) => !f)}
             >
-                <CardContent sx={{ textAlign: 'center' }}>
-                    <Typography variant="h6" gutterBottom>
-                        {weatherData.name}, {getUnicodeFlagIcon(weatherData.sys.country)}
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: getWeatherColour(weatherData.main.temp) }}>
-                        Temperature: {Math.round(weatherData.main.temp)}°C
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: getWeatherColour(weatherData.main.feels_like) }}>
-                        Feels like: {Math.round(weatherData.main.feels_like)}°C
-                    </Typography>
-                    <Typography variant="body2">
-                        Description: {weatherData.weather[0].description}
-                    </Typography>
-                    <Typography variant="body2">
-                        Humidity: {weatherData.main.humidity}%
-                    </Typography>
-                </CardContent>
+                {!flipped ? (
+                    <CardContent sx={{ textAlign: 'center' }}>
+                        <Typography variant="h6" gutterBottom>
+                            {cityName || weatherData.name}, {getUnicodeFlagIcon(weatherData.sys.country)}
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: getWeatherColour(weatherData.main.temp) }}>
+                            Temperature: {Math.round(weatherData.main.temp)}°C
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: getWeatherColour(weatherData.main.feels_like) }}>
+                            Feels like: {Math.round(weatherData.main.feels_like)}°C
+                        </Typography>
+                        <Typography variant="body1">
+                            {weatherData.weather[0].description}
+                        </Typography>
+                        <Typography variant="body1">
+                            Humidity: {weatherData.main.humidity}%
+                        </Typography>
+                    </CardContent>
+                ) : (
+                    <CardContent sx={{ textAlign: 'center' }}>
+                        <Typography variant="h6" gutterBottom>
+                            Forecast
+                        </Typography>
+                        {daily.map((d, i) => (
+                            <Box key={i} sx={{ mb: 1 }}>
+                                <Typography variant="body2">
+                                    {d.date}
+                                </Typography>
+                                <Typography variant="body2">
+                                    Min: {Math.round(d.min)}°C / Max: {Math.round(d.max)}°C
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: getWeatherColour(d.avg) }}>
+                                    Avg: {Math.round(d.avg)}°C
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: getWeatherColour(d.feels_avg) }}>
+                                    Feels avg: {Math.round(d.feels_avg)}°C
+                                </Typography>
+                            </Box>
+                        ))}
+                    </CardContent>
+                )}
             </Card>
         </Grid>
     );

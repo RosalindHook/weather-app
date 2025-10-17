@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const BASE_URL = "https://api.openweathermap.org/data/2.5/";
 
-// export service object with all weather-related API functions
-export const getCurrentWeather = async (city = 'London') => {
+// current weather
+export const getWeatherAndForecast = async (city = 'London') => {
     const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
     if (!API_KEY) {
         throw new Error('Weather API key not configured');
@@ -15,15 +15,29 @@ export const getCurrentWeather = async (city = 'London') => {
     }
 
     try {
-        const response = await axios.get(`${BASE_URL}weather`, {
-            params: {
-                q: city.trim(),     // city param
-                appid: API_KEY,
-                units: 'metric'
-            }
-        });
+        // make both API calls simultaneously
+        const [currentResponse, forecastResponse] = await Promise.all([
+            axios.get(`${BASE_URL}weather`, {
+                params: {
+                    q: city.trim(),     // city param
+                    appid: API_KEY,
+                    units: 'metric'
+                }
+            }),
+            axios.get(`${BASE_URL}forecast`, {
+                params: {
+                    q: city.trim(),     // city param
+                    appid: API_KEY,
+                    units: 'metric'
+                }
+            })
+        ]);
+
         // Log the full API response data
-        return response.data;
+        return {
+            current: currentResponse.data,
+            forecast: forecastResponse.data
+        };
     } catch (error) {
         console.error('Weather API error:', error);
 
@@ -34,5 +48,3 @@ export const getCurrentWeather = async (city = 'London') => {
         throw new Error('Unable to get weather data. Please try again.');
     }
 };
-
-// future exports e.g. getForecast / searchCities
