@@ -5,6 +5,7 @@ export const useMultipleCities = () => {
     const [cities, setCities] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [maxLimitReached, setMaxLimitReached] = useState(false); //new state
 
     const addCity = async (cityName) => {
         // check if city exists
@@ -12,13 +13,15 @@ export const useMultipleCities = () => {
             throw new Error('City already added');
         }
 
-        // only three city limit
-        if (cities.length >= 4) {
+        // Check limit and set flag
+        if (cities.length >= 3) {
+            setMaxLimitReached(true); //set flag when limit hit
             throw new Error('Maximum 3 cities allowed');
         }
 
         setLoading(true);
         setError(null);
+        setMaxLimitReached(false); // clear flag on successful attempt
 
         try {
             const data = await getWeatherAndForecast(cityName);
@@ -51,6 +54,7 @@ export const useMultipleCities = () => {
     const clearAllCities = () => {
         setCities([]);
         setError(null);
+        setMaxLimitReached(false); // clear flag when clearing all
     };
 
     return {
@@ -60,6 +64,7 @@ export const useMultipleCities = () => {
         addCity,
         removeCity,
         clearError,
-        clearAllCities
+        clearAllCities,
+        maxLimitReached // expose new state
     };
 };

@@ -3,7 +3,6 @@ import { Grid, Container, Typography, Box } from '@mui/material';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { useMultipleCities } from '../hooks/useMultipleCities';
 import WeatherCard from '../components/WeatherCard';
-
 const WeatherScene = () => {
     const {
         city,
@@ -17,6 +16,7 @@ const WeatherScene = () => {
         cities,
         loading,
         error,
+        maxLimitReached, // Get the new state
         addCity,
         removeCity,
         clearError
@@ -80,18 +80,24 @@ const WeatherScene = () => {
                         </Box>
                     </form>
                 </Box>
+                {/* Error message */}
                 {error && (
                     <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
                         <Typography color="error">{error}</Typography>
                     </Box>
                 )}
-                {cities.length >= 3 && (
-                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
-                        <Typography variant="body2" color="text.secondary">
+                {/* Conditional helper messages */}
+                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center', minHeight: '24px' }}>
+                    {maxLimitReached ? (
+                        <Typography variant="body2" color="warning.main">
                             Maximum 3 cities reached. Remove a city to add another.
                         </Typography>
-                    </Box>
-                )}
+                    ) : cities.length > 0 && cities.length < 3 ? (
+                        <Typography variant="body2" color="text.secondary">
+                            Would you like to add another city? (up to 3 total)
+                        </Typography>
+                    ) : null}
+                </Box>
                 <Grid container spacing={3} justifyContent="center">
 
                     {cities.map(cityData => (
@@ -115,5 +121,4 @@ const WeatherScene = () => {
         </Container>
     );
 };
-
 export default WeatherScene;
