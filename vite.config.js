@@ -5,8 +5,10 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: './',      // change to relative paths - to match where GitLab Pages is serving files
+  test: {
     globals: true,
     environment: 'happy-dom', // switch from jsdom
-    setupFiles: './src/test/setup.js'
-  },
-)
+    setupFiles: './src/test/setup.js',
+    testTimeout: 30000
+  }
+})
