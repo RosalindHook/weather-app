@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Grid, Typography, Box } from '@mui/material';
+import { Card, CardContent, Grid, Typography, Box, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { getUnicodeFlagIcon, getWeatherColour, getDailySummaries } from '../utils/weatherHelpers';
 
-const WeatherCard = ({ weatherData = null, forecastData = null, cityName = '' }) => {
-    const [flipped, setFlipped] = useState(false); // always called
+const WeatherCard = ({ weatherData = null, forecastData = null, cityName = '', onRemove }) => {
+    const [flipped, setFlipped] = useState(false); // Each card has independent flip state
     if (!weatherData) return null;
     const daily = getDailySummaries(forecastData);
 
@@ -29,8 +30,36 @@ const WeatherCard = ({ weatherData = null, forecastData = null, cityName = '' })
                     position: 'relative',
                     overflow: 'hidden',
                 }}
-                onClick={() => setFlipped((f) => !f)}
+                onClick={() => setFlipped(f => !f)}
             >
+                {/* Remove button */}
+                {onRemove && (
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: 8,
+                            right: 8,
+                            zIndex: 1
+                        }}
+                    >
+                        <IconButton
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent flip when clicking remove
+                                onRemove();
+                            }}
+                            sx={{
+                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                                    color: 'error.main'
+                                }
+                            }}
+                        >
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
+                    </Box>
+                )}
                 {!flipped ? (
                     <CardContent sx={{ textAlign: 'center' }}>
                         <Typography variant="h6" gutterBottom>
@@ -52,21 +81,22 @@ const WeatherCard = ({ weatherData = null, forecastData = null, cityName = '' })
                 ) : (
                     <CardContent sx={{ textAlign: 'center' }}>
                         <Typography variant="h6" gutterBottom>
-                            Forecast
+                            5-Day Forecast
                         </Typography>
                         {daily.map((d, i) => (
                             <Box key={i} sx={{ mb: 1 }}>
-                                <Typography variant="body2">
-                                    {d.date}
+                                <Typography variant="body2" fontWeight="bold">
+                                    {new Date(d.date).toLocaleDateString('en-US', {
+                                        weekday: 'short',
+                                        month: 'short',
+                                        day: 'numeric'
+                                    })}
                                 </Typography>
                                 <Typography variant="body2">
                                     Min: {Math.round(d.min)}°C / Max: {Math.round(d.max)}°C
                                 </Typography>
                                 <Typography variant="body2" sx={{ color: getWeatherColour(d.avg) }}>
                                     Avg: {Math.round(d.avg)}°C
-                                </Typography>
-                                <Typography variant="body2" sx={{ color: getWeatherColour(d.feels_avg) }}>
-                                    Feels avg: {Math.round(d.feels_avg)}°C
                                 </Typography>
                             </Box>
                         ))}
@@ -76,5 +106,4 @@ const WeatherCard = ({ weatherData = null, forecastData = null, cityName = '' })
         </Grid>
     );
 };
-
 export default WeatherCard;

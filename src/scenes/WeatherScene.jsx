@@ -1,10 +1,10 @@
 import React from 'react';
+import { Grid, Container, Typography, Box } from '@mui/material';
 import { useFormValidation } from '../hooks/useFormValidation';
-import { useWeatherData } from '../hooks/useWeatherData';
+import { useMultipleCities } from '../hooks/useMultipleCities';
 import WeatherCard from '../components/WeatherCard';
 
 const WeatherScene = () => {
-    // use custom hooks to handle logic
     const {
         city,
         validationWarning,
@@ -14,65 +14,105 @@ const WeatherScene = () => {
     } = useFormValidation();
 
     const {
-        weatherData,
-        forecastData,
-        currentCity,
+        cities,
         loading,
         error,
-        fetchWeatherData,
+        addCity,
+        removeCity,
         clearError
-    } = useWeatherData();
-
-    // now simpler submit handler
+    } = useMultipleCities();
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!validateForSubmit()) return;
-
         try {
-            await fetchWeatherData(city.trim());
+            await addCity(city.trim());
             resetForm();
         } catch {
-            // error now handled in the hook
+            // Error is already handled in the hook
         }
     };
-
     return (
-        <div>
-            <h2>Weather Search</h2>
+        <Container maxWidth="lg">
+            <Box sx={{ py: 4 }}>
+                <Typography variant="h4" component="h1" gutterBottom align="center">
+                    Weather Dashboard
+                </Typography>
+                <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}>
+                    <form onSubmit={handleSubmit} data-testid="weather-form">
+                        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                            <Box>
+                                <input
+                                    type="text"
+                                    value={city}
+                                    onChange={(e) => handleInputChange(e, clearError)}
+                                    placeholder="Enter City"
+                                    disabled={loading}
+                                    style={{
+                                        padding: '12px',
+                                        borderRadius: '4px',
+                                        border: '1px solid #ccc',
+                                        fontSize: '16px',
+                                        width: '200px'
+                                    }}
+                                />
+                                {validationWarning && (
+                                    <Typography variant="caption" color="warning.main" display="block">
+                                        {validationWarning}
+                                    </Typography>
+                                )}
+                            </Box>
+                            <button
+                                type="submit"
+                                disabled={loading || !city.trim() || cities.length >= 3}
+                                style={{
+                                    padding: '12px 24px',
+                                    borderRadius: '4px',
+                                    border: 'none',
+                                    backgroundColor: loading || cities.length >= 3 ? '#ccc' : '#1976d2',
+                                    color: 'white',
+                                    fontSize: '16px',
+                                    cursor: loading || cities.length >= 3 ? 'not-allowed' : 'pointer'
+                                }}
+                            >
+                                {loading ? 'Loading...' : 'Add City'}
+                            </button>
+                        </Box>
+                    </form>
+                </Box>
+                {error && (
+                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                        <Typography color="error">{error}</Typography>
+                    </Box>
+                )}
+                {cities.length >= 3 && (
+                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                        <Typography variant="body2" color="text.secondary">
+                            Maximum 3 cities reached. Remove a city to add another.
+                        </Typography>
+                    </Box>
+                )}
+                <Grid container spacing={3} justifyContent="center">
 
-            <form onSubmit={handleSubmit} data-testid="weather-form">
-                <input
-                    type="text"
-                    value={city}
-                    onChange={(e) => handleInputChange(e, clearError)}
-                    placeholder="Enter City"
-                    disabled={loading}
-                />
-
-                <button
-                    type="submit"
-                    disabled={loading || !city.trim()}
-                >
-                    {loading ? 'Loading...' : 'Search'}
-                </button>
-            </form>
-
-            {validationWarning && (
-                <p style={{ color: 'orange' }}>{validationWarning}</p>
-            )}
-
-            {error && (
-                <p style={{ color: 'red' }}>{error}</p>
-            )}
-
-            <WeatherCard
-                key={currentCity}
-                weatherData={weatherData}
-                forecastData={forecastData}
-                cityName={currentCity}
-            />
-        </div>
+                    {cities.map(cityData => (
+                        <WeatherCard
+                            key={cityData.id}
+                            weatherData={cityData.current}
+                            forecastData={cityData.forecast}
+                            cityName={cityData.name}
+                            onRemove={() => removeCity(cityData.id)}
+                        />
+                    ))}
+                </Grid>
+                {cities.length === 0 && (
+                    <Box sx={{ textAlign: 'center', mt: 4 }}>
+                        <Typography variant="h6" color="text.secondary">
+                            Search for a city to get started! 🌤️
+                        </Typography>
+                    </Box>
+                )}
+            </Box>
+        </Container>
     );
 };
 
