@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { getCurrentWeather } from '../services/weatherAPI';
+import { getWeatherAndForecast } from '../services/weatherAPI';
 import WeatherCard from '../components/WeatherCard';
 
 const WeatherScene = () => {
     const [city, setCity] = useState('');
     const [weatherData, setWeatherData] = useState(null);
+    const [forecastData, setForecastData] = useState(null); // add forecast state
+    const [currentCity, setCurrentCity] = useState('');     // track which city is displayed
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [validationWarning, setValidationWarning] = useState(null);
@@ -34,10 +36,10 @@ const WeatherScene = () => {
     const handleInputChange = (e) => {
         const value = e.target.value;
         setCity(value); // Update input value state
-    
+
         const hasTyped = value.trim() !== '';         // Has the user typed anything (ignores whitespace)?
         const willBeTouched = touched || hasTyped;    // Predict if the field is (or will be) considered 'touched'
-    
+
         // If the field isn't touched yet but the user has typed something, mark it as touched
         if (hasTyped && !touched) {
             setTouched(true);
@@ -45,7 +47,7 @@ const WeatherScene = () => {
 
         // Run validation in partial mode (i.e. only format checks, not length)
         const warning = validateInput(value, { fullCheck: false });
-    
+
         // Show validation warning only if:
         // - the user has interacted with the field (touched or will be)
         // - AND the input isn’t blank (to avoid warnings while retrying)
@@ -56,8 +58,9 @@ const WeatherScene = () => {
         }
         // Clear any existing API error (from a previous failed submission)
         if (error) setError(null);
-    };    
+    };
 
+    // update submit handler with combined API call - current weather and forecast
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -70,14 +73,19 @@ const WeatherScene = () => {
         setLoading(true);
         setError(null);
         setWeatherData(null);
+        setForecastData(null);  // clear previous forecast
 
         try {
-            const data = await getCurrentWeather(city.trim());
-            setWeatherData(data);
+            // use combined API call
+            const data = await getWeatherAndForecast(city.trim());
+            setWeatherData(data.current);
+            setForecastData(data.forecast);
+            setCurrentCity(city.trim()); // store city name for the card
             setCity('');
             setTouched(false); // Reset after success
         } catch (err) {
             setError(err.message || 'Something went wrong');
+            setCurrentCity(''); // clear city on error
         } finally {
             setLoading(false);
         }
@@ -112,7 +120,12 @@ const WeatherScene = () => {
                 <p style={{ color: 'red' }}>{error}</p>
             )}
 
-            <WeatherCard weatherData={weatherData} />
+            <WeatherCard
+                key={currentCity}
+                weatherData={weatherData}
+                forecastData={forecastData}
+                cityName={currentCity}
+            />
         </div>
     );
 };

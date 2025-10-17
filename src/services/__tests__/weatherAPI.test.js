@@ -1,16 +1,17 @@
 import { describe, it, expect, afterEach, beforeEach } from 'vitest';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { getCurrentWeather } from '../weatherAPI';
+import { getWeatherAndForecast } from '../weatherAPI';
 
 const mock = new MockAdapter(axios);
+const BASE_URL = 'https://api.openweathermap.org/data/2.5/';
 
-describe('getCurrentWeather', () => {
+describe('getWeatherAndForecast', () => {
     let originalKey;
 
     beforeEach(() => {
         originalKey = import.meta.env.VITE_WEATHER_API_KEY;
-        import.meta.env.VITE_WEATHER_API_KEY = 'test-api-key'; // ✅ Add this
+        import.meta.env.VITE_WEATHER_API_KEY = 'test-api-key';
     });
 
     afterEach(() => {
@@ -18,8 +19,8 @@ describe('getCurrentWeather', () => {
         import.meta.env.VITE_WEATHER_API_KEY = originalKey;
     });
 
-    it('returns weather data for London by default', async () => {
-        const mockData = {
+    it('returns current and forecast data for a city', async () => {
+        const mockCurrent = {
             name: 'London',
             sys: { country: 'GB' },
             main: {
@@ -29,32 +30,65 @@ describe('getCurrentWeather', () => {
             },
             weather: [{ description: 'cloudy' }],
         };
-
-        mock.onGet(/weather.*/).reply(200, mockData);
-
-        const data = await getCurrentWeather();
-        expect(data).toEqual(mockData);
-    });
+    
+        const mockForecast = {
+            list: [
+              {
+                dt: 1760713200,
+                main: {
+                  temp: 14.9,
+                  feels_like: 14.12,
+                  temp_min: 14.9,
+                  temp_max: 15,
+                },
+                weather: [
+                  { description: 'overcast clouds' }
+                ],
+              },
+              {
+                dt: 1760745600,
+                main: {
+                  temp: 10.7,
+                  feels_like: 9.63,
+                  temp_min: 10.7,
+                  temp_max: 10.7,
+                },
+                weather: [
+                  { description: 'clear sky' }
+                ],
+              },
+            ]
+        };
+    
+        mock.onGet(new RegExp(`${BASE_URL}weather.*`)).reply(200, mockCurrent);
+        mock.onGet(new RegExp(`${BASE_URL}forecast.*`)).reply(200, mockForecast);
+    
+        const result = await getWeatherAndForecast('London');
+        expect(result).toEqual({
+            current: mockCurrent,
+            forecast: mockForecast
+        });
+    });     
 
     it('throws an error when API key is missing', async () => {
-        import.meta.env.VITE_WEATHER_API_KEY = ''; // simulate missing key
+        import.meta.env.VITE_WEATHER_API_KEY = '';
 
-        await expect(getCurrentWeather('London')).rejects.toThrow('Weather API key not configured');
+        await expect(getWeatherAndForecast('London')).rejects.toThrow('Weather API key not configured');
     });
 
     it('throws an error when city is empty', async () => {
-        await expect(getCurrentWeather('')).rejects.toThrow('City name is required');
+        await expect(getWeatherAndForecast('')).rejects.toThrow('City name is required');
     });
 
     it('throws an error when city is not found (404)', async () => {
-        mock.onGet(/weather.*/).reply(404, {});
+        mock.onGet(/weather/).reply(404);
 
-        await expect(getCurrentWeather('Nocity')).rejects.toThrow('"Nocity" not found. Check spelling and try again.');
+        await expect(getWeatherAndForecast('Nocity')).rejects.toThrow('"Nocity" not found. Check spelling and try again.');
     });
 
     it('throws a generic error on API failure (500)', async () => {
-        mock.onGet(/weather.*/).reply(500, {});
+        mock.onGet(/weather/).reply(500);
 
-        await expect(getCurrentWeather('London')).rejects.toThrow('Unable to get weather data. Please try again.');
+        await expect(getWeatherAndForecast('London')).rejects.toThrow('Unable to get weather data. Please try again.');
     });
 });

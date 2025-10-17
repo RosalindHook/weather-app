@@ -22,6 +22,7 @@ npm run dev
 
 ## Tech stack
 * React 18 - UI framework
+* Material-UI (MUI) - component library and styling
 * Vite - Build tool and dev server
 * Axios - HTTP client for API calls
 * Nivo - Data visualisation library (planned)
@@ -37,30 +38,31 @@ npm test
 ## API integration
 The app uses the [OpenWeatherMap API](https://openweathermap.org/api) for weather data.
 
-### Current Implementation
-- **Current weather data** for hardcoded London location
-- **Error handling** for API failures
-- **Mocked testing** for reliable test suite
-
 ### Current implementation
 - **Current weather data** for any city via search box
+- **Five day forecast display** with flip card interaction showing daily temp summaries
 - **City search** with input validation and user-friendly warnings
-- **Error handling** for API failures and invalide city names
+- **Interactive UI** - click weather cards to flip between current weather and forecast
+- **Error handling** for API failures and invalid city names
+- **Combined API calls** for efficient data fetching (current weather and five day forecast)
 - **Mocked testing** for reliable test suite
 
 ## Project structure
 Current structure:
 ```
 src/
-├── components/          # Reusable UI components
-│   ├── WeatherCard.jsx  # Weather data display component
-│   └── __tests__/       # Component tests
-├── scenes/              # Page-level components
-│   ├── WeatherScene.jsx # Main weather search interface
-│   └── __tests__/       # Scene tests including integration test
-├── services/            # API and business logic
-│   ├── weatherAPI.js    # OpenWeatherMap integration
-│   └── __tests__/       # Service tests
+├── components/             # Reusable UI components
+│   ├── WeatherCard.jsx     # Weather data display component
+│   └── __tests__/          # Component tests
+├── scenes/                 # Page-level components
+│   ├── WeatherScene.jsx    # Main weather search interface
+│   └── __tests__/          # Scene tests including integration test
+├── services/               # API and business logic
+│   ├── weatherAPI.js       # OpenWeatherMap integration
+│   └── __tests__/          # Service tests
+├── utils/                  # Helper functions and utilities
+│   ├── weatherHelpers.js   # OpenWeatherMap integration
+│   └── __tests__/          # to follow (need to do more with data visualisation)
 └── test/
     └── setup.js         # Test environment configuration
 
@@ -93,7 +95,8 @@ The `.gitlab-ci.yml` file defines a three-stage pipeline:
 
 ### Phase 2: User features (+ related tests)
 - [x] City search functionality
-- [ ] 5 day forecast display
+- [x] 5 day forecast display
+- [ ] Add multiple cards to show cities side by side
 - [ ] State management implementation + tests
 - [x] Integration testing (real API calls)
 

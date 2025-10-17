@@ -2,11 +2,11 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import WeatherScene from '../WeatherScene';
-import { getCurrentWeather } from '../../services/weatherAPI';
+import { getWeatherAndForecast } from '../../services/weatherAPI';
 
-// Mock the getCurrentWeather function
+// Mock the getWeatherAndForecast function
 vi.mock('../../services/weatherAPI', () => ({
-    getCurrentWeather: vi.fn()
+    getWeatherAndForecast: vi.fn()
 }));
 
 describe('WeatherScene', () => {
@@ -21,7 +21,7 @@ describe('WeatherScene', () => {
     });
 
     it('displays error message when API call fails', async () => {
-        getCurrentWeather.mockRejectedValueOnce(new Error('API failure'));
+        getWeatherAndForecast.mockRejectedValueOnce(new Error('API failure'));
 
         render(<WeatherScene />);
         fireEvent.change(screen.getByPlaceholderText('Enter City'), {
@@ -36,7 +36,7 @@ describe('WeatherScene', () => {
 
     // for cities not found by API
     it('shows not found error message for city not found by API', async () => {
-        getCurrentWeather.mockRejectedValueOnce(
+        getWeatherAndForecast.mockRejectedValueOnce(
             new Error('"Atlantisss" not found. Check spelling and try again.')
         );
 
@@ -73,13 +73,17 @@ describe('WeatherScene', () => {
 
     // trims whitespace still works
     it('trims whitespace and submits valid city name', async () => {
-        getCurrentWeather.mockResolvedValueOnce({
-            name: 'Paris',
-            main: { temp: 20, feels_like: 18, humidity: 65 },
-            weather: [{ description: 'clear sky' }],
-            sys: { country: 'FR' }
+        getWeatherAndForecast.mockResolvedValueOnce({
+            current: {
+                name: 'Paris',
+                main: { temp: 20, feels_like: 18, humidity: 65 },
+                weather: [{ description: 'clear sky' }],
+                sys: { country: 'FR' }
+            },
+            forecast: {
+                list: []  // mock forecast data as needed here
+            }
         });
-
         render(<WeatherScene />);
 
         fireEvent.change(screen.getByPlaceholderText('Enter City'), {
@@ -90,7 +94,6 @@ describe('WeatherScene', () => {
 
         expect(await screen.findByText(/Paris/)).toBeInTheDocument();
     });
-
 
     // shows length error on submit
     it('shows length validation warning only on submit', async () => {
