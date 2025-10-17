@@ -29,7 +29,7 @@ npm run dev
 * React Testing Library - Component testing utilities
 
 ## Testing
-Test coverage is currently 7 total tests covering service (API integration and error handling) and component tests (UI behaviour and user interactions). To run the tests:
+Test coverage includes unit tests for API integration, component behaviour, input validation, and integration tests for full user interaction flows. To run the tests:
 
 ```bash
 npm test
@@ -42,19 +42,22 @@ The app uses the [OpenWeatherMap API](https://openweathermap.org/api) for weathe
 - **Error handling** for API failures
 - **Mocked testing** for reliable test suite
 
-### Planned Features
-- **City search** with autocomplete
-- **5-day forecast** data integration
-- **Geolocation** support for current location
-- **API response caching** for performance
+### Current implementation
+- **Current weather data** for any city via search box
+- **City search** with input validation and user-friendly warnings
+- **Error handling** for API failures and invalide city names
+- **Mocked testing** for reliable test suite
 
 ## Project structure
 Current structure:
 ```
 src/
 ├── components/          # Reusable UI components
-│   ├── WeatherTest.jsx  # Basic weather API test component
+│   ├── WeatherCard.jsx  # Weather data display component
 │   └── __tests__/       # Component tests
+├── scenes/              # Page-level components
+│   ├── WeatherScene.jsx # Main weather search interface
+│   └── __tests__/       # Scene tests including integration test
 ├── services/            # API and business logic
 │   ├── weatherAPI.js    # OpenWeatherMap integration
 │   └── __tests__/       # Service tests
@@ -89,10 +92,10 @@ The `.gitlab-ci.yml` file defines a three-stage pipeline:
 - [x] GitLab CI/CD integration
 
 ### Phase 2: User features (+ related tests)
-- [ ] City search functionality
+- [x] City search functionality
 - [ ] 5 day forecast display
 - [ ] State management implementation + tests
-- [ ] Integration testing (real API calls)
+- [x] Integration testing (real API calls)
 
 ### Phase 3: UI/UX (+ related tests)
 - [ ] Responsive design
@@ -104,6 +107,3 @@ The `.gitlab-ci.yml` file defines a three-stage pipeline:
 - [ ] E2E testing - user journeys
 - [ ] Accessibility improvements
 - [ ] Visual regression testing
-
-
-
