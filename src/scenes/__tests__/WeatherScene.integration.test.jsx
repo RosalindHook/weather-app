@@ -7,37 +7,37 @@ import WeatherScene from '../WeatherScene';
 
 // integration test to demo real app behaviour
 describe('WeatherScene integration tests', () => {
-    it('integration test - demonstrates reall app behaviour', async () => {
+    it('integration test - demonstrates real app behaviour', async () => {
 
-    render(<WeatherScene />);
+        render(<WeatherScene />);
 
-    const input = screen.getByPlaceholderText('Enter City');
-    const button = screen.getByText('Search');
+        const input = screen.getByPlaceholderText('Enter City');
+        const button = screen.getByText('Add City');
 
-    // test full user interaction flow
-    fireEvent.change(input, { target: { value: 'London' } });
-    expect(input.value).toBe('London'); //verify input works
-    fireEvent.click(button);
+        // test full user interaction flow
+        fireEvent.change(input, { target: { value: 'London' } });
+        expect(input.value).toBe('London'); //verify input works
+        fireEvent.click(button);
 
-    // added await to give API call longer to complete
-    await waitFor(() => {
-        // should show weather data
-        const temp = screen.queryByText(/Temperature:/i);
-        const error = screen.queryByText(/unable to get weather data/i);
-        
-        if (temp) {
-            console.log('integration test - API call succeeded in test environment.');
-            expect(temp).toBeTruthy();
-        } else if (error) {
-            console.log('Integration test: network blocked - app handles gracefully');
-            expect(error).toBeTruthy();
-        } else {
-            throw new Error('Neither success nor error state reached');
-        }
+        // added await to give API call longer to complete
+        await waitFor(() => {
+            // should show weather data
+            const temp = screen.queryByText(/Temperature:/i);
+            const error = screen.queryByText(/unable to get weather data/i);
 
-        // regardless of above, integration between components has worked
-        console.log('Integration test passed: UI > API > Error handling flow works');
-    
-    }, { timeout: 15000 });
+            if (temp) {
+                console.log('integration test - API call succeeded in test environment.');
+                expect(temp).toBeTruthy();
+            } else if (error) {
+                console.log('Integration test: network blocked - app handles gracefully');
+                expect(error).toBeTruthy();
+            } else {
+                throw new Error('Neither success nor error state reached');
+            }
+
+            // regardless of above, integration between components has worked
+            console.log('Integration test passed: UI > API > Error handling flow works');
+
+        }, { timeout: 15000 });
     }, 20000);
 }); // 20 sec timeout
