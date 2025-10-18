@@ -5,7 +5,7 @@ import RemoveButton from './RemoveButton';
 import CurrentWeatherView from './CurrentWeatherView';
 import ForecastView from './ForecastView';
 
-const WeatherCard = ({ weatherData = null, forecastData = null, cityName = '', onRemove }) => {
+const WeatherCard = ({ weatherData = null, forecastData = null, onRemove }) => {
     const [flipped, setFlipped] = useState(false); // Each card has independent flip state
 
     if (!weatherData) return null;
