@@ -1,8 +1,9 @@
 import React from 'react';
 import { CardContent, Typography, Box } from '@mui/material';
 import { getDailySummaries } from '../utils/weatherHelpers';
-import ForecastDay from './ForecastDay';
+// import ForecastDay from './ForecastDay'; // now unused (keep component for now)
 import CityHeader from './CityHeader';
+import TemperatureChart from './TemperatureChart';
 
 const ForecastView = ({ forecastData, weatherData }) => {
     const daily = getDailySummaries(forecastData);
@@ -14,11 +15,13 @@ const ForecastView = ({ forecastData, weatherData }) => {
                 subtitle="5-Day Forecast"
             />
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {daily.map((dayData, index) => (
-                    <ForecastDay key={index} dayData={dayData} />
-                ))}
-            </Box>
+            {daily.length > 0 ? (
+                <TemperatureChart dailyData={daily.slice(0, 5)} />
+            ) : (
+                <Typography variant="body2" color="text.secondary">
+                    No forecast data available
+                </Typography>
+            )}
         </CardContent>
     );
 };
