@@ -1,47 +1,39 @@
 import React from 'react';
-import { Avatar, Box } from '@mui/material';
+import { Avatar, Box, Tooltip } from '@mui/material';
 
 const WeatherAvatar = ({ condition }) => {
-    // priority order - first match found renders that image
-    const getWeatherImage = (condition) => {
+    const weatherMap = [
+        // order = priority, first match renders that image
+        { keywords: ['storm', 'lightning', 'thunder'], src: '/images/storm.jpg', alt: 'Stormy' },
+        { keywords: ['snow', 'blizzard', 'ice'], src: '/images/snow.jpg', alt: 'Snowy' },
+        { keywords: ['rain', 'drizzle', 'wet'], src: '/images/rain.jpg', alt: 'Rainy' },
+        { keywords: ['fog', 'mist'], src: '/images/fog.jpg', alt: 'Foggy' },
+        { keywords: ['wind', 'gale'], src: '/images/wind.jpg', alt: 'Windy' },
+        { keywords: ['cloud', 'overcast'], src: '/images/cloud.jpg', alt: 'Cloudy' },
+        { keywords: ['clear', 'sun'], src: '/images/sunny.jpg', alt: 'Sunny' },
+    ];   
+    
+    const getWeatherData = (condition) => {
         const conditionLower = condition.toLowerCase();
-
-        if (conditionLower.includes('storm') || conditionLower.includes('lightning') || conditionLower.includes('thunder')) {
-            return '/images/storm.jpg';
-        }
-        if (conditionLower.includes('snow') || conditionLower.includes('blizzard') || conditionLower.includes('ice')) {
-            return '/images/snow.jpg';
-        }
-        if (conditionLower.includes('rain') || conditionLower.includes('drizzle') || conditionLower.includes('shower')) {
-            return '/images/rain.jpg';
-        }
-        if (conditionLower.includes('fog') || conditionLower.includes('mist')) {
-            return '/images/fog.jpg';
-        }
-        if (conditionLower.includes('wind') || conditionLower.includes('gale')) {
-            return '/images/wind.jpg';
-        }
-        if (conditionLower.includes('cloud') || conditionLower.includes('overcast')) {
-            return '/images/cloud.jpg';
-        }
-        if (conditionLower.includes('clear') || conditionLower.includes('sun')) {
-            return '/images/sunny.jpg';
-        }
-        // no match - no avatar, just description
-        return null;
+        
+        // return first match
+        return weatherMap.find(weather =>
+            weather.keywords.some(keyword => conditionLower.includes(keyword))
+        );
     };
+    
+    const weatherData = getWeatherData(condition);
 
-    const imageSrc = getWeatherImage(condition);
-
-    if (!imageSrc) {
-        return null;
+    if (!weatherData) {
+        return null;        // no match - no avatar, just description
     }
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Tooltip title={weatherData.alt} arrow>
             <Avatar
-                src={imageSrc}
-                alt={`${condition} weather`}
+                src={weatherData.src}
+                alt={weatherData.alt}
                 sx={{
                     width: 80,
                     height: 80,
@@ -53,6 +45,7 @@ const WeatherAvatar = ({ condition }) => {
                     }
                 }}
             />
+            </Tooltip>
         </Box>
     );
 };
