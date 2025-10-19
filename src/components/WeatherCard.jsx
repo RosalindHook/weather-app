@@ -1,108 +1,29 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Grid, Typography, Box, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { getUnicodeFlagIcon, getWeatherColour, getDailySummaries } from '../utils/weatherHelpers';
+import { Grid } from '@mui/material';
+import FlipCard from './FlipCard';
+import RemoveButton from './RemoveButton';
+import CurrentWeatherView from './CurrentWeatherView';
+import ForecastView from './ForecastView';
 
-const WeatherCard = ({ weatherData = null, forecastData = null, cityName = '', onRemove }) => {
+const WeatherCard = ({ weatherData = null, forecastData = null, onRemove }) => {
     const [flipped, setFlipped] = useState(false); // Each card has independent flip state
+
     if (!weatherData) return null;
-    const daily = getDailySummaries(forecastData);
+
+    const handleFlip = () => setFlipped(prev => !prev);
 
     return (
         <Grid item xs={12} sm={6} md={4}>
-            <Card
-                sx={{
-                    backgroundColor: '#ffffff',
-                    borderRadius: '12px',
-                    boxShadow: 2,
-                    border: '1px solid #e0e0e0',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    width: '320px',
-                    height: '420px',
-                    padding: 2,
-                    transition: 'transform 0.2s ease-in-out',
-                    '&:hover': {
-                        transform: 'translateY(-5px)',
-                    },
-                    cursor: 'pointer',
-                    position: 'relative',
-                    overflow: 'hidden',
-                }}
-                onClick={() => setFlipped(f => !f)}
-            >
-                {/* Remove button */}
-                {onRemove && (
-                    <Box
-                        sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                            zIndex: 1
-                        }}
-                    >
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation(); // Prevent flip when clicking remove
-                                onRemove();
-                            }}
-                            sx={{
-                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                '&:hover': {
-                                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                    color: 'error.main'
-                                }
-                            }}
-                        >
-                            <CloseIcon fontSize="small" />
-                        </IconButton>
-                    </Box>
-                )}
+            <FlipCard onFlip={handleFlip}>
+                {onRemove && <RemoveButton onRemove={onRemove} />}
+
                 {!flipped ? (
-                    <CardContent sx={{ textAlign: 'center' }}>
-                        <Typography variant="h6" gutterBottom>
-                            {weatherData.name}, {getUnicodeFlagIcon(weatherData.sys.country)}
-                        </Typography>
-                        <Typography variant="body1" sx={{ color: getWeatherColour(weatherData.main.temp) }}>
-                            Temperature: {Math.round(weatherData.main.temp)}°C
-                        </Typography>
-                        <Typography variant="body1" sx={{ color: getWeatherColour(weatherData.main.feels_like) }}>
-                            Feels like: {Math.round(weatherData.main.feels_like)}°C
-                        </Typography>
-                        <Typography variant="body1">
-                            {weatherData.weather[0].description}
-                        </Typography>
-                        <Typography variant="body1">
-                            Humidity: {weatherData.main.humidity}%
-                        </Typography>
-                    </CardContent>
+                    <CurrentWeatherView weatherData={weatherData} />
                 ) : (
-                    <CardContent sx={{ textAlign: 'center' }}>
-                        <Typography variant="h6" gutterBottom>
-                            5-Day Forecast
-                        </Typography>
-                        {daily.map((d, i) => (
-                            <Box key={i} sx={{ mb: 1 }}>
-                                <Typography variant="body2" fontWeight="bold">
-                                    {new Date(d.date).toLocaleDateString('en-US', {
-                                        weekday: 'short',
-                                        month: 'short',
-                                        day: 'numeric'
-                                    })}
-                                </Typography>
-                                <Typography variant="body2">
-                                    Min: {Math.round(d.min)}°C / Max: {Math.round(d.max)}°C
-                                </Typography>
-                                <Typography variant="body2" sx={{ color: getWeatherColour(d.avg) }}>
-                                    Avg: {Math.round(d.avg)}°C
-                                </Typography>
-                            </Box>
-                        ))}
-                    </CardContent>
+                    <ForecastView forecastData={forecastData}
+                        weatherData={weatherData} />
                 )}
-            </Card>
+            </FlipCard>
         </Grid>
     );
 };
