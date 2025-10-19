@@ -6,9 +6,6 @@ import { getWeatherColour } from '../utils/weatherHelpers';
 const TemperatureGauge = ({ temperature }) => {
     const temp = Math.round(temperature);
 
-    // debug: check if this runs
-    console.log('TemperatueGauge received temp:', temp)
-
     // Uses a practical temperature scale (to cover most cities) for comparison
     const minTemp = -5; // min on scale
     const maxTemp = 30; // max on scale
@@ -23,13 +20,9 @@ const TemperatureGauge = ({ temperature }) => {
         const normalisedTemp = temp - minTemp;  // i.e. 0-35
         const percentage =(normalisedTemp / tempRange) * 90 + 5;    // 5% to 95%
 
-        console.log(`Temp: ${temp}, Normalised: ${normalisedTemp}, percentage" {$percentage}`);
         return Math.round(percentage);
     }
-
     const gaugePercentage = calculateGaugePercentage(temp);
-
-    console.log('calculated %', gaugePercentage)
 
     const gaugeData = () => [
         {
@@ -43,8 +36,6 @@ const TemperatureGauge = ({ temperature }) => {
             color: '#f0f0f0'
         }
     ];
-
-    console.log('data sent to responsive pie', gaugeData);
 
     return (
         <Box
