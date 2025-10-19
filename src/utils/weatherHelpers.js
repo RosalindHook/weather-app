@@ -12,6 +12,43 @@ export const getWeatherColour = (temp) => {
     return '#d63031';
 };
 
+// Function to work out if it is day or night
+export const isDayTime = (weatherData) => {
+    if (!weatherData) {
+        console.log('isDayTime: No weatherData provided');
+        return true;
+    }
+    
+    console.log('isDayTime received:', weatherData)
+
+    // API structure for sunrise and sunset weatherData.sys
+    let sunrise, sunset;
+
+    if (weatherData.sys?.sunrise && weatherData.sys?.sunset) {
+        sunrise = weatherData.sys.sunrise;
+        sunset = weatherData.sys.sunset;
+        console.log('Using sys.sunrise/sunset');
+    } else {
+        console.log('No sunrise or sunset data found, assuming day');
+        console.log('Available keys:', Object.keys(weatherData));
+        return true;
+    }
+
+    const now = Math.floor(Date.now() / 1000);
+    // simple comparison using UTC to determine if day
+    const isDay = now >= sunrise && now <= sunset;
+
+    console.log('Day/night check:', {
+        now: new Date(now * 1000).toLocaleTimeString(),
+        sunrise: new Date(sunrise * 1000).toLocaleTimeString(),
+        sunset: new Date(sunset * 1000).toLocaleTimeString(),
+        isDay
+    });
+
+    return isDay;
+};
+
+
 // Groups forecast data into per-day summaries (min, max, avg temps and feels_like)
 export const getDailySummaries = (forecastData) => {
     if (!forecastData || !forecastData.list) return [];
