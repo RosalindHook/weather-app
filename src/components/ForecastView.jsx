@@ -3,7 +3,7 @@ import { CardContent, Typography, Box } from '@mui/material';
 import { getDailySummaries } from '../utils/weatherHelpers';
 // import ForecastDay from './ForecastDay'; // now unused (keep component for now)
 import CityHeader from './CityHeader';
-import TemperatureChart from './TemperatureChart';
+import TemperatureHeatmap from './TemperatureHeatmap';
 
 const ForecastView = ({ forecastData, weatherData }) => {
     const daily = getDailySummaries(forecastData);
@@ -16,7 +16,7 @@ const ForecastView = ({ forecastData, weatherData }) => {
             />
 
             {daily.length > 0 ? (
-                <TemperatureChart dailyData={daily.slice(0, 5)} />
+                <TemperatureHeatmap dailyData={daily.slice(0, 5)} />
             ) : (
                 <Typography variant="body2" color="text.secondary">
                     No forecast data available
