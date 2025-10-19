@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 const WeatherDataList = ({ items }) => {
     return (
         <Box
-            component="d1"
+            component="dl"
             sx={{
                 margin: 0,
                 '& dt': {

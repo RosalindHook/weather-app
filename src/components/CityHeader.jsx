@@ -6,7 +6,7 @@ const CityHeader = ({ weatherData, subtitle = null }) => {
     return (
         <>
             <Typography variant="h6" gutterBottom>
-                {weatherData.name}, {getUnicodeFlagIcon(weatherData.sys.country)}
+                {weatherData.name} {getUnicodeFlagIcon(weatherData.sys.country)}
             </Typography>
             {subtitle && (
                 <Typography variant="subtitle1" color="text.secondary" gutterBottom>
