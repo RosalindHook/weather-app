@@ -30,9 +30,11 @@ npm run dev
 * React Testing Library - Component testing utilities
 
 ## Testing
-Test coverage includes unit tests for API integration, component behaviour, input validation, and integration tests for full user interaction flows. Custom hook tests for state management logic testing to follow.
-To run the tests:
+Test coverage includes integration tests for full user interaction flows, API integration, component behaviour and input validation. Tests focus on real user workflows and cross-component functionality.
 
+There are also isolated unit tests for priority components (where there is sufficient complexity e.g. logic or multiple props/states), helper functions, and hook tests (to follow).
+
+To run the test suite:
 ```bash
 npm test
 ```
@@ -42,36 +44,58 @@ The app uses the [OpenWeatherMap API](https://openweathermap.org/api) for weathe
 ### Current implementation
 - **Multiple weather cards** - Add up to three cities side by side with independent functionality
 - **Interactive flip cards** - Click weather cards to flip between current weather and 5-day forecast
-- **Current weather data** for any city via search box with smart input validation
-- **Five day forecast display** with daily temperature summaries and weather conditions
-- **Enhanced state management** - Custom hooks for clean architecture and reusable logic
-- **Some initial UX features** - Duplicate city prevention, helpful user guidance, and intuitive error handling
-- **Error handling** for API failures, invalid city names, and user input validation
-- **Combined API calls** for efficient data fetching (current weather and 5-day forecast)
-- **Comprehensive testing** - Unit and integration tests. Custom hook tests to follow
-- 
+- **Input validation** - real time validation with user-friendly error messages and guidance
+- **Semantic HMTL structure** - uses definition lists (dl/dt/dd) for accessible weather data display
+- **Clean component architecture** - focused, single-responsiblity components for maintainability
+- **Enhanced state management** - custom hooks for clean architecture and reusable logic
+- **Intelligent UX features** - Duplicate city prevention, user guidance, and intuitive error handling
+- **Robust error handling** - API failures, invalid city names, and comprehensive input validation
+- **API integration** - Combined calls for current weather and 5-day forecast data
+- **Integration testing** - Real user workflow testing across component boundaries
+
+### Architecture
+The application now follows clean architecture principles with focused, reusable components:
+
+- **Single responsibility** - each component has one clear purpose
+- **Reusability** - components can be used in different contexts
+- **Props interface** - Clear, minimal prop requirements
+- **Separation of concerns** - Container vs presentational component patterns
+
 ## Project structure
 Current structure:
 ```
 src/
-├── components/                  # Reusable UI components
-│   ├── WeatherCard.jsx          # Weather data display component
-│   └── __tests__/               # Component tests
-├── hooks/                       # Custom React hooks for state maangement
-│   ├── useFormValidation.js     # Form input validation and state
-│   └── useMultipleCities.js     # State management of multiple cities
-│   └── useWeatherData.js        # Currently unused hook - kept for potential future single city components
-├── scenes/                      # Page-level components
-│   ├── WeatherScene.jsx         # Main weather search interface
-│   └── __tests__/               # Scene tests including integration test
-├── services/                    # API and business logic
-│   ├── weatherAPI.js            # OpenWeatherMap integration
-│   └── __tests__/               # Service tests
-├── utils/                       # Helper functions and utilities
-│   ├── weatherHelpers.js        # Weather data processing and display helpers
-│   └── __tests__/               # to follow (need to do more with data visualisation)
+├── components/                     # Reusable UI components
+│   ├── WeatherCard.jsx             # Main weather card container
+│   ├── FlipCard.jsx                # Reusable flip card container
+│   ├── RemoveButton.jsx            # City removal functionality
+│   ├── CurrentWeatherView.jsx      # Current weather display
+│   ├── ForecastView.jsx            # 5-day forecast display
+│   ├── ForecastDay.jsx             # Individual day forecast
+│   ├── WeatherDataList.jsx         # Semantic weather data display (dl/dt/dd)
+│   ├── CityHeader.jsx              # Reusable city name and flag display
+│   ├── CitySearchForm.jsx          # Search form with validation
+│   ├── StatusMessages.jsx          # Error and helper message display
+│   ├── CityGrid.jsx                # City cards layout container
+│   ├── EmptyState.jsx              # Empty state display
+│   └── __tests__/                  # Component tests (for priority components, skipping those well-tested through integraiton)
+├── hooks/                          # Custom React hooks for state management
+│   ├── useFormValidation.js        # Form input validation and state
+│   ├── useMultipleCities.js        # Multiple cities state management
+│   ├── useWeatherData.js           # Single city hook (unused - kept for future use)
+│   └── __tests__/                  # Hook tests
+├── scenes/                         # Page-level components
+│   ├── WeatherScene.jsx            # Main weather dashboard orchestrator
+│   └── __tests__/                  # Integration tests
+├── services/                       # API and business logic
+│   ├── weatherAPI.js               # OpenWeatherMap API integration
+│   └── __tests__/                  # Service tests
+├── utils/                          # Helper functions and utilities
+│   ├── weatherHelpers.js           # Weather data processing and display helpers
+│   └── __tests__/                  # Utility tests
 └── test/
-    └── setup.js                 # Test environment configuration
+    └── setup.js                    # Test environment configuration
+
 
 ```
 ## Development workflow
@@ -90,8 +114,10 @@ The `.gitlab-ci.yml` file defines a three-stage pipeline:
 3. **Deploy stage**: Deploys to GitLab Pages with proper routing setup
 
 ### Limitations
-**Import method:** Due to using GitLab's free tier, the deployment process uses a manual import method rather than automated mirroring. For production applications, a paid GitLab tier would enable automatic repository mirroring and more sophisticated CI/CD workflows, including deployment updates whereby changes would be pushed to GitLab's copy of the repository and tests run automatically as part of the CI/CD pipeline.
-**Security considerations:** For deployment, the OpenWeatherMap API key has been added as a masked CI/CD environment variable on GitLab, but it is important to note that this means the API key could potentially be exposed in the browser through inspecting the source code or network requests. This security limitation is acknowledged as a trade-off for MVP development speed (and OpenWeatherMap's free tier has rate limiting which also provides some protection), but this would need to be addressed in any production deployment, for example by using a backend and server-side proxy.
+
+- **Import method:** Due to using GitLab's free tier, the deployment process uses a manual import method rather than automated mirroring. For production applications, a paid GitLab tier would enable automatic repository mirroring and more sophisticated CI/CD workflows, including deployment updates whereby changes would be pushed to GitLab's copy of the repository and tests run automatically as part of the CI/CD pipeline.
+
+- **Security considerations:** For deployment, the OpenWeatherMap API key has been added as a masked CI/CD environment variable on GitLab, but it is important to note that this means the API key could potentially be exposed in the browser through inspecting the source code or network requests. This security limitation is acknowledged as a trade-off for MVP development speed (and OpenWeatherMap's free tier has rate limiting which also provides some protection), but this would need to be addressed in any production deployment, for example by using a backend and server-side proxy.
 
 ## High level plan
 
@@ -106,6 +132,13 @@ The `.gitlab-ci.yml` file defines a three-stage pipeline:
 - [x] Add multiple cards to show cities side by side
 - [x] State management implementation + tests
 - [x] Integration testing (real API calls)
+
+### Phase 2.5: Architecture improvements
+- [x] Component refactoring for single responsibility
+- [x] Semantic HTML implementation (dl/dt/dd structure)
+- [x] Reusable component architecture
+- [x] Clean separation of concerns
+- [x] Improved accessibility and maintainability
 
 ### Phase 3: UI/UX (+ related tests)
 - [ ] Responsive design
