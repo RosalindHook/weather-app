@@ -1,6 +1,7 @@
 # Weather app
 
-A weather application with interactive data visualisations built with Vite and Nivo. The deployed application is available [here](https://rosalindhook.gitlab.io/weather-app/).
+A weather application with interactive data visualisations built with Vite and Nivo. It features flip cards, temperature gauges, weather condition avatars and 5 day forecast heatmaps.
+The deployed application is available [here](https://rosalindhook.gitlab.io/weather-app/).
 
 ## Quick start
 
@@ -25,14 +26,36 @@ npm run dev
 * Material-UI (MUI) - component library and styling
 * Vite - Build tool and dev server
 * Axios - HTTP client for API calls
-* Nivo - Data visualisation library (planned)
+* Nivo - Data visualisation library for interactive charts and heatmaps
 * Vitest - Testing framework
 * React Testing Library - Component testing utilities
 
-## Testing
-Test coverage includes integration tests for full user interaction flows, API integration, component behaviour and input validation. Tests focus on real user workflows and cross-component functionality.
+## Key features
+### Interactive Data Visualisations
+- Temperature gauge - Arc-style gauge showing current temperature with color-coded ranges
+- 5-Day Forecast heatmap - Colour-coded temperature visualization with embedded values
+- Weather condition avatars - Visual weather icons with day/night detection
+- Beaded "necklace" display - overlapping weather avatars for 5-day conditions
 
-There are also isolated unit tests for priority components (where there is sufficient complexity e.g. logic or multiple props/states), helper functions, and hook tests (to follow).
+### Enhanced User Experience
+- Flip cards - interactive cards with current weather (front) and 5-day forecast (back)
+- Button-only flipping - Clear flip buttons with intuitive circular arrow icons
+- Smart weather conditions - most common daily condition selection from multiple readings
+- Consistent typography - unified font styling across all components
+
+### Core Functionality
+- Multiple weather cards - Add up to three cities side by side with independent functionality
+- Input validation - Real-time validation with user-friendly error messages and guidance
+- Semantic HTML structure - Uses definition lists (dl/dt/dd) for accessible weather data display
+- Clean component architecture - Focused, single-responsibility components for maintainability
+- Enhanced state management - Custom hooks for clean architecture and reusable logic
+- Intelligent UX features - Duplicate city prevention, user guidance, and intuitive error handling
+- Robust error handling - API failures, invalid city names, and comprehensive input validation
+
+## Testing
+Test coverage includes integration tests for full user interaction flows, API integration, component behaviour, input validation, and data visualisation 'helper' functions. Tests focus on real user workflows and cross-component functionality.
+
+Unit tests cover data processing helpers (weather condition aggregation, temp calculations), visualisation components (heatmap data formatting), and user interaction flows (form validation, card flipping, city management). There are also isolated unit tests for priority components (where there is sufficient complexity e.g. logic or multiple props/states), helper functions, and hook tests (to follow).
 
 To run the test suite:
 ```bash
@@ -42,11 +65,12 @@ npm test
 The app uses the [OpenWeatherMap API](https://openweathermap.org/api) for weather data.
 
 ### Current implementation
+- **Responsive design** - using Material-UI's responsive Grid system 
 - **Multiple weather cards** - Add up to three cities side by side with independent functionality
 - **Interactive flip cards** - Click weather cards to flip between current weather and 5-day forecast
 - **Input validation** - real time validation with user-friendly error messages and guidance
-- **Semantic HMTL structure** - uses definition lists (dl/dt/dd) for accessible weather data display
-- **Clean component architecture** - focused, single-responsiblity components for maintainability
+- **Semantic HTML structure** - uses definition lists (dl/dt/dd) for accessible weather data display
+- **Clean component architecture** - focused, single-responsibility components for maintainability
 - **Enhanced state management** - custom hooks for clean architecture and reusable logic
 - **Intelligent UX features** - Duplicate city prevention, user guidance, and intuitive error handling
 - **Robust error handling** - API failures, invalid city names, and comprehensive input validation
@@ -66,19 +90,22 @@ Current structure:
 ```
 src/
 ├── components/                     # Reusable UI components
-│   ├── WeatherCard.jsx             # Main weather card container
+│   ├── WeatherCard.jsx             # Main weather card container with flip state
 │   ├── FlipCard.jsx                # Reusable flip card container
+│   ├── FlipButton.jsx              # Flip action button with circular arrow
 │   ├── RemoveButton.jsx            # City removal functionality
-│   ├── CurrentWeatherView.jsx      # Current weather display
-│   ├── ForecastView.jsx            # 5-day forecast display
-│   ├── ForecastDay.jsx             # Individual day forecast
+│   ├── CurrentWeatherView.jsx      # Current weather with gauge and avatar
+│   ├── ForecastView.jsx            # 5-day forecast with heatmap and conditions
+│   ├── TemperatureGauge.jsx        # Nivo arc gauge for current temperature
+│   ├── TemperatureHeatmap.jsx      # Nivo heatmap for 5-day temperatures
+│   ├── WeatherAvatar.jsx           # Weather condition visual avatars
 │   ├── WeatherDataList.jsx         # Semantic weather data display (dl/dt/dd)
 │   ├── CityHeader.jsx              # Reusable city name and flag display
 │   ├── CitySearchForm.jsx          # Search form with validation
 │   ├── StatusMessages.jsx          # Error and helper message display
 │   ├── CityGrid.jsx                # City cards layout container
 │   ├── EmptyState.jsx              # Empty state display
-│   └── __tests__/                  # Component tests (for priority components, skipping those well-tested through integraiton)
+│   └── __tests__/                  # Component tests
 ├── hooks/                          # Custom React hooks for state management
 │   ├── useFormValidation.js        # Form input validation and state
 │   ├── useMultipleCities.js        # Multiple cities state management
@@ -91,12 +118,10 @@ src/
 │   ├── weatherAPI.js               # OpenWeatherMap API integration
 │   └── __tests__/                  # Service tests
 ├── utils/                          # Helper functions and utilities
-│   ├── weatherHelpers.js           # Weather data processing and display helpers
+│   ├── weatherHelpers.js           # Weather data processing, colors, and day/night detection
 │   └── __tests__/                  # Utility tests
 └── test/
     └── setup.js                    # Test environment configuration
-
-
 ```
 ## Development workflow
 * **main**: production-ready code
@@ -141,9 +166,9 @@ The `.gitlab-ci.yml` file defines a three-stage pipeline:
 - [x] Improved accessibility and maintainability
 
 ### Phase 3: UI/UX (+ related tests)
-- [ ] Responsive design
-- [ ] Interactive weather visualisations
-- [ ] Loading states and error handling
+- [x] Responsive design
+- [x] Interactive weather visualisations
+- [x] Loading states and error handling
 
 ### Phase 4: Optimisation
 - [ ] Performance optimisation (caching, lazy loading)
