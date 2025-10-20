@@ -1,35 +1,37 @@
 import React from 'react';
-import { CardContent, Typography } from '@mui/material';
+import { CardContent } from '@mui/material';
 import { getWeatherColour } from '../utils/weatherHelpers';
 import WeatherDataList from './WeatherDataList';
 import CityHeader from './CityHeader';
+import TemperatureGauge from './TemperatureGauge';
+import WeatherAvatar from './WeatherAvatar';
 
 const CurrentWeatherView = ({ weatherData }) => {
     const weatherItems = [
         {
-            term: 'Temperature',
-            value: `${Math.round(weatherData.main.temp)}C`,
-            color: getWeatherColour(weatherData.main.temp)
-        },
-        {
             term: 'Feels like',
-            value: `${Math.round(weatherData.main.feels_like)}C`,
+            value: `${Math.round(weatherData.main.feels_like)}°C`,
             color: getWeatherColour(weatherData.main.feels_like)
         },
         {
             term: 'Condition',
-            value: weatherData.weather[0].description
-        },
-        {
-            term: 'Humidity',
-            value: `${weatherData.main.humidity}%`
+            value: weatherData.weather[0].description,
+            color: getWeatherColour(weatherData.main.temp)
         }
     ];
 
     return (
         <CardContent sx={{ textAlign: 'center', width: '100%' }}>
-            <CityHeader weatherData={weatherData} />
+            <CityHeader 
+                weatherData={weatherData}
+                subtitle="Currently" />
+            <TemperatureGauge temperature={weatherData.main.temp} />
             <WeatherDataList items={weatherItems} />
+
+            <WeatherAvatar 
+                condition={weatherData.weather[0].description}
+                // sx={{mt: 0 }} 
+            />
         </CardContent>
     );
 };

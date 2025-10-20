@@ -10,7 +10,7 @@ const WeatherDataList = ({ items }) => {
                 '& dt': {
                     fontWeight: 'bold',
                     marginTop: 1,
-                    fontSize: '0.875rem',
+                    fontSize: '0.85rem',    //match back of card
                     color: 'text.secondary'
                 },
                 '& dd': {
