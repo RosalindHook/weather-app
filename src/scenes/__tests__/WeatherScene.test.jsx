@@ -100,14 +100,12 @@ describe('WeatherScene', () => {
             expect(screen.getByText(/Paris/)).toBeInTheDocument();
 
         });
-
         // debug
         screen.debug();
 
-
         // Wait for the city to be added and card to appear
         expect(await screen.findByText(/Paris/)).toBeInTheDocument();
-        expect(screen.getByText(/20C/)).toBeInTheDocument();
+        expect(screen.getByText(/20°C/)).toBeInTheDocument();
         // Check that the form is cleared
         expect(screen.getByPlaceholderText('Enter City')).toHaveValue('');
         // Check helper message appears

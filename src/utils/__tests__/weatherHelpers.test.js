@@ -33,19 +33,21 @@ describe('weatherHelpers', () => {
             list: [
                 {
                     dt: 1760788800, // Unix time stamp for Oct 18, 2025, 12pm UTC
-                    main: { temp: 20, feels_like: 18, temp_min: 16, temp_max: 24 }
+                    main: { temp: 20, feels_like: 18, temp_min: 16, temp_max: 24 },
+                    weather: [{ description: 'clear sky'}]
                 },
                 {
                     dt: 1760792400, // Oct 18, 2025, 1pm UTC
-                    main: { temp: 22, feels_like: 20, temp_min: 18, temp_max: 26 }
+                    main: { temp: 22, feels_like: 20, temp_min: 18, temp_max: 26 },
+                    weather: [{ description: 'few clouds'}]
                 },
                 {
                     dt: 1760875200, // Oct 19, 2025, 12pm UTC
-                    main: { temp: 15, feels_like: 13, temp_min: 12, temp_max: 18 }
+                    main: { temp: 15, feels_like: 13, temp_min: 12, temp_max: 18 },
+                    weather: [{ description: 'light rain'}]
                 }
             ]
         };
-
 
         it('groups forecast data by date', () => {
             const result = getDailySummaries(mockForecastData);
@@ -82,6 +84,47 @@ describe('weatherHelpers', () => {
             expect(day).toHaveProperty('feels_avg');
             expect(day).toHaveProperty('min');
             expect(day).toHaveProperty('max');
+            expect(day).toHaveProperty('condition');
+        });
+
+        // test for weather condition functionality
+        it('determines most common weather condition for each day', () => {
+            const result = getDailySummaries(mockForecastData);
+            const firstDay = result[0];
+            const secondDay = result[1];
+
+            // First day should have clear sky and few clouds, should pick first alphabetically or morst common
+            expect(firstDay.condition).toBeDefined();
+            expect(typeof firstDay.condition).toBe('string');
+
+            // second day should be 'light rain'
+            expect(secondDay.condition).toBe('light rain');
+        });
+
+        // Test for weather condition with multiple same conditions
+        it('picks most common weather condition when multiple exist', () => {
+            const testData = {
+                list: [
+                    {
+                        dt: 1760788800,
+                        main: { temp: 20, feels_like: 18, temp_min: 16, temp_max: 24 },
+                        weather: [{ description: 'clear sky' }]
+                    },
+                    {
+                        dt: 1760792400, // Same day
+                        main: { temp: 22, feels_like: 20, temp_min: 18, temp_max: 26 },
+                        weather: [{ description: 'clear sky' }]
+                    },
+                    {
+                        dt: 1760796000, // Same day
+                        main: { temp: 18, feels_like: 16, temp_min: 15, temp_max: 22 },
+                        weather: [{ description: 'few clouds' }]
+                    }
+                ]
+            };
+
+            const result = getDailySummaries(testData);
+            expect(result[0].condition).toBe('clear sky'); // Most common (2 vs 1)         
         });
     });
 });
