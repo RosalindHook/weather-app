@@ -22,7 +22,9 @@ const CurrentWeatherView = ({ weatherData }) => {
 
     return (
         <CardContent sx={{ textAlign: 'center', width: '100%' }}>
-            <CityHeader weatherData={weatherData} />
+            <CityHeader 
+                weatherData={weatherData}
+                subtitle="Currently" />
             <TemperatureGauge temperature={weatherData.main.temp} />
             <WeatherDataList items={weatherItems} />
 
