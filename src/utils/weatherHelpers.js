@@ -12,7 +12,70 @@ export const getWeatherColour = (temp) => {
     return '#d63031';
 };
 
-// Function to work out if it is day or night
+// Groups forecast data into per-day summaries (min, max, avg temps and feels_like)
+export const getDailySummaries = (forecastData) => {
+    if (!forecastData || !forecastData.list) return [];
+
+    const byDate = {};
+
+    for (const entry of forecastData.list) {
+        const date = new Date(entry.dt * 1000).toISOString().split('T')[0]; // YYYY-MM-DD
+
+        if (!byDate[date]) {
+            byDate[date] = {
+                count: 0,
+                sumTemp: 0,
+                sumFeels: 0,
+                min: Infinity,
+                max: -Infinity,
+                weatherConditions: [],      // add tracking of weather conditions
+            };
+        }
+
+        const rec = byDate[date];
+        const m = entry.main;
+
+        rec.count += 1;
+        rec.sumTemp += m.temp;
+        rec.sumFeels += m.feels_like;
+        rec.min = Math.min(rec.min, m.temp_min);
+        rec.max = Math.max(rec.max, m.temp_max);
+        rec.weatherConditions.push(entry.weather[0].description);       // add condition
+    }
+
+    // converts byDate object to array
+    return Object.entries(byDate).map(([date, rec]) => {
+        // count how many times each condition appears
+        // e.g. conditionCounts = {
+            //'sunny': 3,
+            //'cloudy': 2
+        // }
+        const conditionCounts = {};
+        rec.weatherConditions.forEach(condition => {
+            conditionCounts[condition] = (conditionCounts[condition] || 0) + 1;
+        });    
+        // Find most common condition
+        // convert to sortable array
+        // From: { 'sunny': 3, 'cloudy': 2}
+        // To: [['sunny', 3], ['cloudy', 2]]
+        const mostCommonCondition = Object.entries(conditionCounts)  
+        // sort by count - highest first
+        // sorts: [['sunny', 3], ['cloudy', 2]] -> sunny wins with 3
+        // [0] first item, [0] first part = 'sunny', return null if nothing found
+        .sort(([,a], [,b]) => b - a)[0]?.[0] || null;
+    
+    return {
+        date,
+        avg: rec.sumTemp / rec.count,
+        feels_avg: rec.sumFeels / rec.count,
+        min: rec.min,
+        max: rec.max,
+        condition: mostCommonCondition
+        };
+    });
+};
+
+// Function to work out if it is day or night - currently unused
 export const isDayTime = (weatherData) => {
     if (!weatherData) {
         console.log('isDayTime: No weatherData provided');
@@ -44,45 +107,5 @@ export const isDayTime = (weatherData) => {
         sunset: new Date(sunset * 1000).toLocaleTimeString(),
         isDay
     });
-
     return isDay;
-};
-
-
-// Groups forecast data into per-day summaries (min, max, avg temps and feels_like)
-export const getDailySummaries = (forecastData) => {
-    if (!forecastData || !forecastData.list) return [];
-
-    const byDate = {};
-
-    for (const entry of forecastData.list) {
-        const date = new Date(entry.dt * 1000).toISOString().split('T')[0]; // YYYY-MM-DD
-
-        if (!byDate[date]) {
-            byDate[date] = {
-                count: 0,
-                sumTemp: 0,
-                sumFeels: 0,
-                min: Infinity,
-                max: -Infinity,
-            };
-        }
-
-        const rec = byDate[date];
-        const m = entry.main;
-
-        rec.count += 1;
-        rec.sumTemp += m.temp;
-        rec.sumFeels += m.feels_like;
-        rec.min = Math.min(rec.min, m.temp_min);
-        rec.max = Math.max(rec.max, m.temp_max);
-    }
-
-    return Object.entries(byDate).map(([date, rec]) => ({
-        date,
-        avg: rec.sumTemp / rec.count,
-        feels_avg: rec.sumFeels / rec.count,
-        min: rec.min,
-        max: rec.max,
-    }));
 };
