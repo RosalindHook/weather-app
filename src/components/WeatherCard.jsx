@@ -15,8 +15,8 @@ const WeatherCard = ({ weatherData = null, forecastData = null, onRemove }) => {
 
     return (
         <Grid item xs={12} sm={6} md={4}>
-            <FlipCard>
-                <FlipButton onFlip={handleFlip} />
+            <FlipCard onFlip={handleFlip} weatherData={weatherData}>
+            <FlipButton />
                 {onRemove && <RemoveButton onRemove={onRemove} />}
 
                 {!flipped ? (

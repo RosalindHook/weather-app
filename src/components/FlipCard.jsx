@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '@mui/material';
 
-const FlipCard = ({ children }) => {
+const FlipCard = ({ children, onFlip }) => {
     return (
         <Card
             sx={{
@@ -19,9 +19,11 @@ const FlipCard = ({ children }) => {
                 '&:hover': {
                     transform: 'translateY(-5px)',
                 },
+                cursor: 'pointer',
                 position: 'relative',
                 overflow: 'hidden',
             }}
+            onClick={onFlip}
         >
             {children}
         </Card>
