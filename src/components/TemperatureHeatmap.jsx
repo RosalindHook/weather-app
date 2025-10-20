@@ -17,6 +17,8 @@ const TemperatureHeatmap = ({ dailyData }) => {
             return {
                 x: dayName,
                 y: temp,
+                min: Math.round(day.min),
+                max: Math.round(day.max),
             };
         })
     }];
@@ -36,7 +38,12 @@ const TemperatureHeatmap = ({ dailyData }) => {
                 cellOpacity={1}
                 cellBorderColor="#ffffff"
                 cellBorderWidth={2}
-                enableLabels={false} // No labels on squares
+
+                // enable labels with temp numbers
+                enableLabels={true} 
+                labelTextColor="white"
+                labelFormat={(value) => `${value}°`}    //just 18° not 18°C
+
                 enableGridX={false}
                 enableGridY={false}
                 axisTop={null} // Remove top axis
@@ -50,6 +57,8 @@ const TemperatureHeatmap = ({ dailyData }) => {
 
                 animate={true}
                 motionConfig="gentle"
+                
+                // custom tooltip showing max/min
                 tooltip={({ cell }) => (
                     <div
                         style={{
@@ -57,12 +66,14 @@ const TemperatureHeatmap = ({ dailyData }) => {
                             padding: '6px 10px',
                             border: '1px solid #ccc',
                             borderRadius: '4px',
-                            fontSize: '14px',
+                            fontSize: '13px',
                             fontWeight: 'bold',
-                            color: '#333'
+                            color: '#333',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
                         }}
                     >
-                        {cell.formattedValue}
+                        <div>Max: {cell.data.max}°C</div>
+                        <div>Min: {cell.data.min}°C</div>
                     </div>
                 )}
             />
