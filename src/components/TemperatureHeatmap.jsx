@@ -11,7 +11,7 @@ const TemperatureHeatmap = ({ dailyData }) => {
     // Transform data for Nivo heatmap - single row of days
     const heatmapData = [{
         id: 'forecast',
-        data: dailyData.map((day, index) => {
+        data: dailyData.map((day) => {
             const dayName = new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' });
             const temp = Math.round(day.avg);
             return {
