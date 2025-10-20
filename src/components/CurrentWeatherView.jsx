@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardContent, Typography } from '@mui/material';
+import { CardContent } from '@mui/material';
 import { getWeatherColour } from '../utils/weatherHelpers';
 import WeatherDataList from './WeatherDataList';
 import CityHeader from './CityHeader';
@@ -15,7 +15,8 @@ const CurrentWeatherView = ({ weatherData }) => {
         },
         {
             term: 'Condition',
-            value: weatherData.weather[0].description
+            value: weatherData.weather[0].description,
+            color: getWeatherColour(weatherData.main.temp)
         }
     ];
 
@@ -24,7 +25,11 @@ const CurrentWeatherView = ({ weatherData }) => {
             <CityHeader weatherData={weatherData} />
             <TemperatureGauge temperature={weatherData.main.temp} />
             <WeatherDataList items={weatherItems} />
-            <WeatherAvatar condition={weatherData.weather[0].description} />
+
+            <WeatherAvatar 
+                condition={weatherData.weather[0].description}
+                // sx={{mt: 0 }} 
+            />
         </CardContent>
     );
 };

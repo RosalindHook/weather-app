@@ -26,7 +26,8 @@ const ForecastView = ({ forecastData, weatherData }) => {
                         mt: 2,
                         mb: 0.1,
                         color: 'text.secondary',
-                        fontSize: '0.85rem'
+                        fontSize: '0.85rem',
+                        fontWeight: 'bold'
                     }}
                 >
                     Average Temperatures
@@ -38,10 +39,11 @@ const ForecastView = ({ forecastData, weatherData }) => {
                 <Typography
                 variant='subtitle2'
                 sx={{
-                    mt: 2,
-                    mb: 0.1,
+                    mt: 2.5,
+                    mb: 0.05,
                     color: 'text.secondary',
-                    fontSize: '0.85rem'
+                    fontSize: '0.85rem',
+                    fontWeight: 'bold'
                 }}
             >
                 Daily Conditions
@@ -53,7 +55,7 @@ const ForecastView = ({ forecastData, weatherData }) => {
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        mt: 0.1,
+                        mt: 0,
                         position: 'relative',
                         height: '100px', // Taller for full-size avatars
                     }}
