@@ -21,18 +21,15 @@ const TemperatureHeatmap = ({ dailyData }) => {
         })
     }];
 
-    console.log('Heatmap data: ', heatmapData);
-
     return (
         <Box sx={{ height: '80px', width: '100%', mt: 2 }}>
             <ResponsiveHeatMap
                 data={heatmapData}
-                margin={{ top: 10, right: 10, bottom: 30, left: 10 }}
+                margin={{ top: 1, right: 10, bottom: 30, left: 10 }}
                 valueFormat={(value) => `${value}°C`}
-            
+
                 // Use colour palette
                 colors={(cell) => {
-                    console.log('Colour function alled with:', cell); //debug
                     return getWeatherColour(cell.value);
                 }}
                 emptyColor="#f0f0f0"
