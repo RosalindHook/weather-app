@@ -6,6 +6,7 @@ import CitySearchForm from '../components/CitySearchForm';
 import StatusMessages from '../components/StatusMessages';
 import CityGrid from '../components/CityGrid';
 import EmptyState from '../components/EmptyState';
+import WeatherAvatar from '../components/WeatherAvatar';
 
 const WeatherScene = () => {
     const {
@@ -45,9 +46,50 @@ const WeatherScene = () => {
     return (
         <Container maxWidth="lg">
             <Box sx={{ py: 4 }}>
-                <Typography variant="h4" component="h1" gutterBottom align="center">
-                    Weather Dashboard
-                </Typography>
+                {/* Header and storm */}
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        mb: 4
+                    }}
+                >
+                 {/* Weather avatar component with storm pic*/}
+                <WeatherAvatar condition="storm" />
+                
+                 {/* Name of app */}
+                <Typography
+                    variant="h3"
+                    component="h1"
+                    sx={{
+                        fontWeight: 'bold',
+                        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                        backgroundClip: 'text',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        textAlign: 'center',
+                        mb: 1,
+                        letterSpacing: '0.5px',
+                        mt: 1 // Small gap after avatar
+                        }}
+                    >
+                        Tempest
+                    </Typography>
+
+                    {/* Subtitle */}
+                    <Typography
+                        variant="subtitle1"
+                        sx={{
+                            color: 'text.secondary',
+                            textAlign: 'center',
+                            fontStyle: 'italic',
+                            mb: 3
+                        }}
+                    >
+                        Your Weather Command Centre ⛈️
+                    </Typography>
+                </Box>
 
                 <CitySearchForm
                     city={city}
@@ -56,7 +98,7 @@ const WeatherScene = () => {
                     citiesCount={cities.length}
                     onInputChange={handleInputChangeWithClearError}
                     onSubmit={handleSubmit}
-                />
+                    />
 
                 <StatusMessages
                     error={error}
