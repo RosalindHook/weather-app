@@ -12,12 +12,13 @@ const FlipCard = ({ children, onFlip }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        width: '320px',
+        width: '100%',    //fill grid column width
+        maxWidth: 320,    // cap width on larger screens
         height: '420px',
         padding: 2,
         cursor: 'pointer',
         position: 'relative',
-        overflow: 'hidden',
+        overflow: 'visible',    // ensure close button shows fully
         transition: 'transform 0.2s ease-in-out',
         '&:hover': { transform: 'translateY(-5px)' },
       }}
