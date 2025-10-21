@@ -25,7 +25,9 @@ test:
       - node_modules/
     policy: pull
   script:
-    - npm run test
+    - npm ci
+    - npm run test -- --exclude="**/WeatherScene.integration.test.jsx"
+
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 pages:

@@ -2,13 +2,16 @@ import React from 'react';
 import { Container, Typography, Box } from '@mui/material';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { useMultipleCities } from '../hooks/useMultipleCities';
-import CitySearchForm from '../components/CitySearchForm';
+import CitySearchForm from '../components/forms/CitySearchForm';
 import StatusMessages from '../components/StatusMessages';
 import CityGrid from '../components/CityGrid';
 import EmptyState from '../components/EmptyState';
 import WeatherAvatar from '../components/WeatherAvatar';
 
 const WeatherScene = () => {
+    // test app-level error boundary - uncomment to test
+    // throw new Error('Testing app-level error boundary');
+
     const {
         city,
         validationWarning,
@@ -46,16 +49,12 @@ const WeatherScene = () => {
             {/* Full-Width Sky Background Section */}
             <Box
                 sx={{
-                    background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)',
-                    width: '100vw', // Full viewport width
                     position: 'relative',
-                    left: '50%',
-                    right: '50%',
-                    marginLeft: '-50vw',
-                    marginRight: '-50vw',
+                    background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)',
+                    width: '100%',
                     borderRadius: '0 0 24px 24px',
                     py: 4,
-                   mb: 4,
+                    mb: 4,
                     overflow: 'hidden',
                     '&::before': {
                         content: '""',
@@ -64,22 +63,25 @@ const WeatherScene = () => {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        background: 'radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)',
+                        background:
+                            'radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)',
                         pointerEvents: 'none'
                     },
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'center'
+                    alignItems: 'center',
                 }}
             >
                 {/* Content Container - constrained width inside full-width background */}
-                <Container maxWidth="lg">
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        py: 2
-                    }}>
+                <Container maxWidth="lg" disableGutters>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            py: 2
+                        }}
+                    >
                         {/* Storm Avatar */}
                         <WeatherAvatar condition="storm" />
 

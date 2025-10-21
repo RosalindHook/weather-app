@@ -1,7 +1,7 @@
 import React from 'react';
 import { ResponsiveHeatMap } from '@nivo/heatmap';
 import { Box } from '@mui/material';
-import { getWeatherColour } from '../utils/weatherHelpers';
+import { getWeatherColour } from '../../utils/weatherHelpers';
 
 const TemperatureHeatmap = ({ dailyData }) => {
     if (!dailyData || dailyData.length === 0) {
@@ -40,7 +40,7 @@ const TemperatureHeatmap = ({ dailyData }) => {
                 cellBorderWidth={2}
 
                 // enable labels with temp numbers
-                enableLabels={true} 
+                enableLabels={true}
                 labelTextColor="white"
                 labelFormat={(value) => `${value}°`}    //just 18° not 18°C
 
@@ -57,7 +57,7 @@ const TemperatureHeatmap = ({ dailyData }) => {
 
                 animate={true}
                 motionConfig="gentle"
-                
+
                 // custom tooltip showing max/min
                 tooltip={({ cell }) => (
                     <div

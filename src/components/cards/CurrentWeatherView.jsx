@@ -1,10 +1,10 @@
 import React from 'react';
 import { CardContent } from '@mui/material';
-import { getWeatherColour } from '../utils/weatherHelpers';
-import WeatherDataList from './WeatherDataList';
-import CityHeader from './CityHeader';
-import TemperatureGauge from './TemperatureGauge';
-import WeatherAvatar from './WeatherAvatar';
+import { getWeatherColour } from '../../utils/weatherHelpers';
+import WeatherDataList from '../WeatherDataList';
+import CityHeader from '../CityHeader';
+import TemperatureGauge from '../charts/TemperatureGauge';
+import WeatherAvatar from '../WeatherAvatar';
 
 const CurrentWeatherView = ({ weatherData }) => {
     const weatherItems = [
@@ -22,15 +22,15 @@ const CurrentWeatherView = ({ weatherData }) => {
 
     return (
         <CardContent sx={{ textAlign: 'center', width: '100%' }}>
-            <CityHeader 
+            <CityHeader
                 weatherData={weatherData}
                 subtitle="Currently" />
             <TemperatureGauge temperature={weatherData.main.temp} />
             <WeatherDataList items={weatherItems} />
 
-            <WeatherAvatar 
+            <WeatherAvatar
                 condition={weatherData.weather[0].description}
-                // sx={{mt: 0 }} 
+            // sx={{mt: 0 }} 
             />
         </CardContent>
     );

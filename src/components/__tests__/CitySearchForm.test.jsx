@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
-import CitySearchForm from '../CitySearchForm';
+import CitySearchForm from '../forms/CitySearchForm';
 
 describe('CitySearchForm', () => {
     const defaultProps = {

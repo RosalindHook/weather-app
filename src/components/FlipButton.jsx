@@ -2,11 +2,11 @@ import React from 'react';
 import { Box, IconButton } from '@mui/material';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
 
-const FlipButton = ({ onFlip }) => {
-    const handleFlip = (e) => {
-        e.stopPropagation();    // prevent double flip
-        onFlip();
-    };
+const FlipButton = () => {
+    // const handleFlip = (e) => {
+    //     e.stopPropagation();    // prevent double flip
+    //     onFlip();
+    // };
 
     return (
         <Box
@@ -19,7 +19,7 @@ const FlipButton = ({ onFlip }) => {
         >
             <IconButton
                 size="small"
-                onClick={handleFlip}
+//                onClick={handleFlip}
                 sx={{
                     backgroundColor: 'rgba(255, 255, 255, 0.8)',
                     '&:hover':{
