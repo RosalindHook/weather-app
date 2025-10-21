@@ -2,7 +2,7 @@
 
 A weather application with interactive data visualisations built with Vite and Nivo. It features flip cards, temperature gauges, weather condition avatars and 5 day forecast heatmaps.
 
-**[Live demo](https://weather-app-a31b04.gitlab.io/)**
+**[Live demo](https://weather-app-11218f.gitlab.io/)**
 
 ## Prerequisites
 
@@ -71,7 +71,7 @@ Clean component architecture with:
 - **Error boundaries** for robust error handling
 
 ## Deployment
-Deployed on GitLab Pages [here](https://weather-app-a31b04.gitlab.io/) from development branch for assessment purposes. Production deployments would follow proper Git workflow practices (main/production branch).
+Deployed on GitLab Pages: [Live Demo](https://weather-app-11218f.gitlab.io/)
 
 **CI/CD Pipeline:**
 * Automated builds and testing
