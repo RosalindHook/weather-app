@@ -9,6 +9,9 @@ import EmptyState from '../components/EmptyState';
 import WeatherAvatar from '../components/WeatherAvatar';
 
 const WeatherScene = () => {
+    // test app-level error boundary - uncomment to test
+    // throw new Error('Testing app-level error boundary');
+
     const {
         city,
         validationWarning,

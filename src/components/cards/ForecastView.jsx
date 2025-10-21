@@ -3,7 +3,7 @@ import { CardContent, Typography, Box } from '@mui/material';
 import { getDailySummaries } from '../../utils/weatherHelpers';
 // import ForecastDay from './ForecastDay'; // now unused (keep component for now)
 import CityHeader from '../CityHeader';
-import TemperatureHeatmap from '../TemperatureHeatmap';
+import TemperatureHeatmap from '../charts/TemperatureHeatmap';
 import WeatherAvatar from '../WeatherAvatar';
 
 const ForecastView = ({ forecastData, weatherData }) => {

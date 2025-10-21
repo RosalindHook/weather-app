@@ -3,6 +3,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline, Box } from '@mui/material';
 import WeatherScene from './scenes/WeatherScene';
 import './App.css';
+import AppErrorBoundary from './components/error-boundaries/AppErrorBoundary'
 
 const theme = createTheme({
   palette: {
@@ -15,16 +16,18 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box 
-        sx={{ 
-          minHeight: '100vh', 
-          width: '100%', 
-          bgcolor: 'background.default', 
-          overflowX: 'hidden' 
-        }}
-      >
-        <WeatherScene />
-      </Box>
+      <AppErrorBoundary>
+        <Box 
+          sx={{ 
+            minHeight: '100vh', 
+            width: '100%', 
+            bgcolor: 'background.default', 
+            overflowX: 'hidden' 
+          }}
+        >
+          <WeatherScene />
+        </Box>
+      </AppErrorBoundary>
     </ThemeProvider>
   );
 }

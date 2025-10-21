@@ -7,6 +7,10 @@ import CurrentWeatherView from './CurrentWeatherView';
 import ForecastView from './ForecastView';
 
 const WeatherCard = ({ weatherData = null, forecastData = null, onRemove }) => {
+    // uncomment following to test error boundaries, then enter city 'London' in UI - error is contained and page does not crash
+    // if (weatherData.name === 'London') {
+    //     throw new Error('Test error for London');
+    // }
     const [flipped, setFlipped] = useState(false); // Each card has independent flip state
 
     if (!weatherData) return null;
