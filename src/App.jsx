@@ -1,35 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { CssBaseline, Box } from '@mui/material';
+import WeatherScene from './scenes/WeatherScene';
+import './App.css';
+import AppErrorBoundary from './components/error-boundaries/AppErrorBoundary'
+
+const theme = createTheme({
+  palette: {
+    primary: { main: '#1976d2' },
+    background: { default: '#f5f5f5' }, // global app bg
+  },
+});
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Weather App Coming Soon!</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AppErrorBoundary>
+        <Box 
+          sx={{ 
+            minHeight: '100vh', 
+            width: '100%', 
+            bgcolor: 'background.default', 
+            overflowX: 'hidden' 
+          }}
+        >
+          <WeatherScene />
+        </Box>
+      </AppErrorBoundary>
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;
