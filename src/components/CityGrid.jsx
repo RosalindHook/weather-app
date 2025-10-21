@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid } from '@mui/material';
-import WeatherCard from './WeatherCard';
+import WeatherCard from './cards/WeatherCard';
 
 const CityGrid = ({ cities, onRemoveCity }) => {
     return (

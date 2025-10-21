@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Typography, Box } from '@mui/material';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { useMultipleCities } from '../hooks/useMultipleCities';
-import CitySearchForm from '../components/CitySearchForm';
+import CitySearchForm from '../components/forms/CitySearchForm';
 import StatusMessages from '../components/StatusMessages';
 import CityGrid from '../components/CityGrid';
 import EmptyState from '../components/EmptyState';

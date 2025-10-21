@@ -1,7 +1,7 @@
 import React from 'react';
 import { ResponsivePie } from '@nivo/pie';
 import { Box } from '@mui/material';
-import { getWeatherColour } from '../utils/weatherHelpers';
+import { getWeatherColour } from '../../utils/weatherHelpers';
 
 const TemperatureGauge = ({ temperature }) => {
     const temp = Math.round(temperature);
@@ -18,7 +18,7 @@ const TemperatureGauge = ({ temperature }) => {
 
         // normal range - map everything else to 5-95% of arc
         const normalisedTemp = temp - minTemp;  // i.e. 0-35
-        const percentage =(normalisedTemp / tempRange) * 90 + 5;    // 5% to 95%
+        const percentage = (normalisedTemp / tempRange) * 90 + 5;    // 5% to 95%
 
         return Math.round(percentage);
     }
